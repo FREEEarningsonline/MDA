@@ -1,0 +1,2887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MDA Mustafa Digital Academy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">  
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">  
+
+    <style>  
+        :root {  
+            --primary: #4F46E5;  
+            --primary-dark: #4338CA;  
+            --secondary: #10B981;  
+            --bg-color: #F3F4F6;  
+            --card-bg: #FFFFFF;  
+            --text-main: #111827;  
+            --text-muted: #6B7280;  
+            --border-color: #E5E7EB;  
+            --danger: #EF4444;  
+            --warning: #F59E0B;  
+            --purple: #8B5CF6;  
+            --blue-tick: #3B82F6;
+            --nav-height: calc(60px + env(safe-area-inset-bottom));  
+        }  
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }  
+        body { background-color: var(--bg-color); color: var(--text-main); overflow-x: hidden; }  
+
+        .hidden { display: none !important; }  
+        .btn { padding: 10px 16px; border-radius: 8px; border: none; font-weight: 500; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-size: 14px; }  
+        .btn-sm { padding: 6px 10px; font-size: 12px; }  
+        .btn-primary { background: var(--primary); color: white; }  
+        .btn-primary:active { background: var(--primary-dark); }  
+        .btn-secondary { background: var(--secondary); color: white; }  
+        .btn-danger { background: var(--danger); color: white; }  
+        .btn-warning { background: var(--warning); color: white; }  
+        .btn-outline { background: transparent; border: 1px solid var(--border-color); color: var(--text-main); }  
+        .btn-google { background: #FFFFFF; border: 1px solid var(--border-color); color: #374151; font-weight: 600; width: 100%; padding: 12px; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; }  
+        .btn:disabled { opacity: 0.6; pointer-events: none; }  
+          
+        .input-group { margin-bottom: 16px; }  
+        .input-group label { display: block; margin-bottom: 6px; font-size: 14px; font-weight: 500; color: var(--text-muted); }  
+        .input-group input, .input-group select, .input-group textarea { width: 100%; padding: 10px 12px; border: 1px solid var(--border-color); border-radius: 8px; outline: none; font-size: 14px; }  
+        .input-group input:focus, .input-group select:focus, .input-group textarea:focus { border-color: var(--primary); }  
+
+        #app-container { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }  
+        header { background: var(--card-bg); height: max(60px, calc(60px + env(safe-area-inset-top))); padding-top: env(safe-area-inset-top); display: flex; align-items: center; justify-content: space-between; padding-left: 16px; padding-right: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); z-index: 10; flex-shrink: 0; }  
+        .header-brand { font-size: 16px; font-weight: 700; color: var(--primary); }  
+          
+        #main-content { flex: 1; overflow-y: auto; padding-bottom: calc(var(--nav-height) + 20px); position: relative; }  
+        .screen { display: none; padding: 16px; animation: fadeIn 0.3s ease; }  
+        .screen.active { display: block; }  
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }  
+
+        #bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: var(--nav-height); background: var(--card-bg); box-shadow: 0 -1px 3px rgba(0,0,0,0.1); display: flex; justify-content: space-around; align-items: center; padding-bottom: env(safe-area-inset-bottom); z-index: 10; overflow-x: auto; }  
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-muted); text-decoration: none; font-size: 11px; flex: 1; min-width: 60px; height: 100%; cursor: pointer; }  
+        .nav-item i { font-size: 20px; margin-bottom: 4px; }  
+        .nav-item.active { color: var(--primary); }  
+
+        .grid-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }  
+        @media (min-width: 600px) { .grid-cards { grid-template-columns: repeat(3, 1fr); } }  
+        @media (min-width: 1024px) { .grid-cards { grid-template-columns: repeat(4, 1fr); } }  
+
+        .card { background: var(--card-bg); border-radius: 12px; overflow: hidden; box-shadow: 0 1px 2px rgba(0,0,0,0.05); margin-bottom: 16px; display: flex; flex-direction: column; position: relative;}  
+        .card-img { width: 100%; height: 120px; object-fit: cover; background: #E5E7EB; flex-shrink: 0; cursor: pointer;}  
+        .card-img-pdf { height: 160px; object-fit: contain; background: #fff; padding: 10px;}  
+        .card-body { padding: 12px; flex: 1; display: flex; flex-direction: column; justify-content: space-between;}  
+        .card-title { font-weight: 600; font-size: 14px; margin-bottom: 4px; line-height: 1.3;}  
+        .card-price { font-weight: 700; color: var(--primary); font-size: 14px; }  
+        .card-original-price { font-size: 11px; color: var(--text-muted); text-decoration: line-through; margin-right: 4px; }
+        .instructor-name { font-size: 11px; color: var(--text-muted); margin-bottom: 8px; font-weight: 500; display: flex; align-items: center; gap: 4px;}  
+          
+        .card.card-full { grid-column: 1 / -1; }  
+        .card.card-full .card-img { height: 180px; }  
+        .card.card-full .card-title { font-size: 16px; }  
+
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; color: white; background: var(--primary); width: max-content;}  
+        .badge-free { background: var(--secondary); }  
+        .badge-live { background: var(--danger); }  
+        .badge-pdf { background: var(--purple); }  
+        .badge-discount { background: #DC2626; color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
+
+        .wallet-card { background: linear-gradient(135deg, #4F46E5, #3B82F6); color: white; padding: 16px; border-radius: 12px; margin-bottom: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }  
+        .wallet-card h3 { font-size: 14px; opacity: 0.9; margin-bottom: 4px; }  
+        .wallet-card h1 { font-size: 24px; font-weight: 700; margin-bottom: 12px; }  
+
+        .premium-package-box { background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; display: flex; flex-direction: column; align-items: center; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }  
+        .premium-package-box h3 { font-size: 18px; margin-bottom: 8px; }  
+        .premium-package-box p { font-size: 13px; opacity: 0.9; margin-bottom: 16px; }  
+
+        .all-courses-package-box { background: linear-gradient(135deg, #FF512F, #DD2476); color: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; display: flex; flex-direction: column; align-items: center; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+        .all-courses-package-box h3 { font-size: 18px; margin-bottom: 8px; }
+        .all-courses-package-box p { font-size: 13px; opacity: 0.9; margin-bottom: 16px; }
+
+        .slider-container { position: relative; width: 100%; height: 180px; border-radius: 12px; overflow: hidden; margin-bottom: 20px; background: #ddd; }  
+        .slider-track { display: flex; width: 100%; height: 100%; transition: transform 0.5s ease-in-out; }  
+        .slide-item { min-width: 100%; height: 100%; position: relative; cursor: pointer; }  
+        .slide-item img { width: 100%; height: 100%; object-fit: cover; }  
+        .slide-item .overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.6), transparent); display: flex; flex-direction: column; justify-content: flex-end; padding: 16px; }  
+        .hero-tag { background: var(--warning); color: white; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: bold; width: fit-content; margin-bottom: 8px; }  
+
+        .search-box { display: flex; align-items: center; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 8px 12px; margin-bottom: 16px; }  
+        .search-box i { color: var(--text-muted); margin-right: 8px; }  
+        .search-box input { border: none; outline: none; background: transparent; width: 100%; font-size: 14px; }  
+
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 50; display: none; justify-content: center; align-items: center; padding: 16px; }  
+        .modal-overlay.active { display: flex; }  
+        .modal-content { background: var(--card-bg); width: 100%; max-width: 500px; max-height: 90vh; border-radius: 16px; display: flex; flex-direction: column; overflow: hidden; animation: scaleIn 0.2s ease; }  
+        @keyframes scaleIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }  
+        .modal-header { padding: 16px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }  
+        .modal-body { padding: 16px; overflow-y: auto; flex: 1; }  
+        .close-modal { background: none; border: none; font-size: 24px; color: var(--text-muted); cursor: pointer; padding: 5px 10px; margin: -5px -10px; }  
+
+        #global-loader { position: fixed; inset: 0; background: rgba(255,255,255,0.9); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; }  
+        .spinner { width: 40px; height: 40px; border: 4px solid var(--border-color); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; }  
+        @keyframes spin { to { transform: rotate(360deg); } }  
+          
+        #toast-container { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); z-index: 9998; display: flex; flex-direction: column; gap: 8px; width: 90%; max-width: 400px; pointer-events: none; }  
+        .toast { background: #333; color: white; padding: 12px 16px; border-radius: 8px; font-size: 14px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); animation: fadeUp 0.3s forwards; }  
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }  
+
+        #fullscreen-video-overlay { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; }  
+        #fs-video-player { width: 100%; height: 100%; outline: none; border: none; background: #000; }  
+        .close-fs-btn { position: absolute; top: max(20px, env(safe-area-inset-top)); left: 20px; z-index: 10000; background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.4); padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 8px; backdrop-filter: blur(5px); }  
+
+        .lesson-item { background: var(--bg-color); padding: 12px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border: 1px solid var(--border-color); }  
+        .list-row { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid var(--border-color); }  
+        .post-action { display: flex; align-items: center; gap: 6px; cursor: pointer; color: var(--text-muted); font-size: 14px; padding: 8px 0; }  
+        .post-action.liked i { color: var(--danger); font-weight: 900; }  
+        .post-action.saved i { color: var(--primary); font-weight: 900; }  
+        
+        .days-checkboxes { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+        .days-checkboxes label { display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: normal; background: #e5e7eb; padding: 4px 8px; border-radius: 4px; cursor: pointer; }
+        .days-checkboxes input:checked + span { font-weight: bold; color: var(--primary); }
+
+        .copy-btn { background: #4F46E5; color: #fff; border: none; border-radius: 4px; padding: 2px 8px; font-size: 11px; cursor: pointer; margin-left: 6px; }
+        .copy-btn:hover { background: #4338CA; }
+
+        @media (min-width: 768px) {  
+            #app-container { flex-direction: row; }  
+            #bottom-nav { position: static; flex-direction: column; width: 80px; height: 100vh; justify-content: flex-start; padding-top: 20px; }  
+            .nav-item { height: 80px; flex: none; }  
+            #main-content { padding-bottom: 20px; }  
+        }  
+    </style>  
+</head>
+<body>
+
+<div id="global-loader"><div class="spinner"></div><div style="margin-top:10px;font-weight:500;">Loading...</div></div>  
+<div id="toast-container"></div>  
+
+<div id="fullscreen-video-overlay" class="hidden">  
+    <button class="close-fs-btn" onclick="closeFullscreenVideo()"><i class="fas fa-arrow-left"></i> Back</button>  
+    <iframe id="fs-video-player" allow="autoplay; fullscreen" allowfullscreen></iframe>  
+</div>  
+
+<div id="app-container">  
+    <nav id="bottom-nav">  
+        <a class="nav-item active" data-target="screen-home" onclick="navigateTo('screen-home')"><i class="fas fa-home"></i>Home</a>  
+        <a class="nav-item" data-target="screen-explore" onclick="navigateTo('screen-explore')"><i class="fas fa-compass"></i>Explore</a>  
+        <a class="nav-item" data-target="screen-books" onclick="navigateTo('screen-books')"><i class="fas fa-book"></i>E-Books</a>  
+        <a class="nav-item" data-target="screen-my-courses" onclick="navigateTo('screen-my-courses')"><i class="fas fa-book-open"></i>My Learning</a>  
+        <a class="nav-item" data-target="screen-community" onclick="onclick="navigateTo('screen-community')"><i class="fas fa-users"></i>Community</a>  
+        <a class="nav-item" data-target="screen-profile" onclick="navigateTo('screen-profile')"><i class="fas fa-user"></i>Profile</a>  
+    </nav>  
+
+    <div style="flex:1; display:flex; flex-direction:column; overflow:hidden;">  
+        <header>  
+            <div class="header-brand">MDA Mustafa Digital Academy</div>  
+            <div><i class="fas fa-bell" style="font-size: 20px; color: var(--text-muted); cursor: pointer;" onclick="openNotifications()"></i></div>  
+        </header>  
+        <main id="main-content" onscroll="handleScroll()">  
+              
+            <div id="screen-login" class="screen">  
+                <div style="text-align: center; margin-bottom: 32px; margin-top: 40px;">  
+                    <h1 style="color: var(--primary); font-size: 28px;">Welcome Back</h1>  
+                    <p style="color: var(--text-muted); margin-top: 8px;">Login to access your courses</p>  
+                </div>  
+                <form id="form-login" onsubmit="event.preventDefault(); handleLogin();">  
+                    <div class="input-group"><label>Email</label><input type="email" id="login-email" required></div>  
+                    <div class="input-group"><label>Password</label><input type="password" id="login-password" required></div>  
+                    <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; margin-top: 8px;">Login</button>  
+                </form>  
+                <button type="button" class="btn-google" onclick="handleGoogleSignIn()">  
+                    <i class="fab fa-google" style="color: #EA4335;"></i> Continue with Google  
+                </button>  
+                <p style="text-align: center; margin-top: 24px; font-size: 14px;">  
+                    Don't have an account? <span style="color: var(--primary); cursor: pointer; font-weight:600;" onclick="navigateTo('screen-register')">Register</span>  
+                </p>  
+            </div>  
+
+            <div id="screen-register" class="screen">  
+                <div style="text-align: center; margin-bottom: 32px; margin-top: 40px;">  
+                    <h1 style="color: var(--primary); font-size: 28px;">Create Account</h1>  
+                </div>  
+                <form id="form-register" onsubmit="event.preventDefault(); handleRegister();">  
+                    <div class="input-group"><label>Full Name</label><input type="text" id="reg-name" required></div>  
+                    <div class="input-group"><label>Email</label><input type="email" id="reg-email" required></div>  
+                    <div class="input-group"><label>Password</label><input type="password" id="reg-password" required minlength="6"></div>  
+                    <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; margin-top: 8px;">Register</button>  
+                </form>  
+                <button type="button" class="btn-google" onclick="handleGoogleSignIn()">  
+                    <i class="fab fa-google" style="color: #EA4335;"></i> Sign up with Google  
+                </button>  
+                <p style="text-align: center; margin-top: 24px; font-size: 14px;">  
+                    Already have an account? <span style="color: var(--primary); cursor: pointer; font-weight:600;" onclick="navigateTo('screen-login')">Login</span>  
+                </p>  
+            </div>  
+
+            <div id="screen-home" class="screen active">  
+                <div class="search-box">  
+                    <i class="fas fa-search"></i>  
+                    <input type="text" id="home-search-input" placeholder="Search courses..." onkeyup="handleGlobalSearch()">  
+                </div>  
+
+                <div id="home-slider-container" class="hidden"></div>  
+
+                <!-- ALL COURSES VIP ACCESS PACKAGE BOX -->
+                <div class="all-courses-package-box">
+                    <h3><i class="fas fa-crown"></i> Lifetime All-Courses VIP Access</h3>
+                    <p>Unlock all current & future paid video courses with a single 1-time payment.</p>
+                    <h2 style="margin-bottom:12px;" id="home-all-courses-price">Rs 0</h2>
+                    <button class="btn btn-warning" style="color:#000; width:100%; font-weight:bold;" onclick="buyAllCoursesPackage()"><i class="fas fa-unlock-alt"></i> Buy VIP All Access</button>
+                </div>
+                  
+                <h2 style="margin-bottom:16px;">Welcome to Mustafa Digital Academy!</h2>  
+                  
+                <div id="live-classes-section" class="hidden">  
+                    <h3 style="margin-bottom: 12px; font-size: 16px; color:var(--danger);"><i class="fas fa-video"></i> Scheduled Live Classes</h3>  
+                    <div id="home-live-classes" style="margin-bottom:24px; display:flex; flex-direction:column; gap:12px;"></div>  
+                </div>  
+
+                <div id="home-courses-wrapper">  
+                    <h3 style="margin-bottom: 12px; font-size: 16px;">Featured Courses</h3>  
+                    <div id="home-featured-courses" class="grid-cards"></div>  
+                </div>  
+            </div>  
+
+            <div id="screen-explore" class="screen">  
+                <div class="search-box">  
+                    <i class="fas fa-search"></i>  
+                    <input type="text" id="explore-search-input" placeholder="Find courses, live classes..." onkeyup="handleGlobalSearch()">  
+                </div>  
+                <div style="display:flex; gap:10px; margin-bottom:16px; overflow-x:auto; padding-bottom:4px; flex-wrap:nowrap; white-space:nowrap;">  
+                    <button class="btn btn-outline" onclick="filterExplore('all')">All</button>  
+                    <button class="btn btn-outline" onclick="filterExplore('free')">Free</button>  
+                    <button class="btn btn-outline" onclick="filterExplore('paid')">Paid</button>  
+                    <button class="btn btn-outline" onclick="filterExplore('video')">Video</button>  
+                    <button class="btn btn-outline" style="color:var(--danger); border-color:var(--danger);" onclick="filterExplore('live')"><i class="fas fa-circle" style="font-size:10px;"></i> Live</button>  
+                </div>  
+                <div id="explore-courses" class="grid-cards"></div>  
+            </div>  
+
+            <div id="screen-books" class="screen">  
+                <div class="premium-package-box">  
+                    <h3>Lifetime PDF Access</h3>  
+                    <p>Unlock all premium E-Books for a one-time payment.</p>  
+                    <h2 style="margin-bottom:12px;" id="books-package-price">Rs 0</h2>  
+                    <button class="btn btn-warning" style="color:#000; width:100%; font-weight:bold;" onclick="buyLifetimePdfPackage()">Buy Lifetime Access</button>  
+                </div>  
+                <h3 style="margin-bottom: 16px;">Library</h3>  
+                <div id="books-list" class="grid-cards"></div>  
+            </div>  
+
+            <div id="screen-course-details" class="screen">  
+                <button class="btn btn-outline" style="margin-bottom:16px;" onclick="goBack()"><i class="fas fa-arrow-left"></i> Back</button>  
+                <div id="course-details-content"></div>  
+            </div>  
+
+            <div id="screen-lesson" class="screen">  
+                <button class="btn btn-outline" style="margin-bottom:16px;" onclick="goBack()"><i class="fas fa-arrow-left"></i> Course Details</button>  
+                <h3 id="lesson-course-title" style="margin-bottom:16px;">Course Lessons</h3>  
+                <div id="lesson-list-content"></div>  
+            </div>  
+
+            <div id="screen-my-courses" class="screen">  
+                <h2 style="margin-bottom: 16px;">My Learning (Courses)</h2>  
+                <div id="my-courses-list" class="grid-cards"></div>  
+            </div>  
+
+            <div id="screen-community" class="screen">  
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">  
+                    <h2>Community</h2>  
+                    <button class="btn btn-primary" onclick="openCommunityPostModal()"><i class="fas fa-plus"></i> Post</button>  
+                </div>  
+                <div id="community-feed"></div>  
+                <div id="community-loader" style="text-align:center; padding:10px; color:var(--text-muted); font-size:14px; display:none;">Loading more...</div>  
+            </div>  
+
+            <div id="screen-profile" class="screen">  
+                <div id="profile-content"></div>  
+            </div>  
+
+            <div id="screen-teacher" class="screen">  
+                <button class="btn btn-outline" style="margin-bottom:16px;" onclick="goBack()"><i class="fas fa-arrow-left"></i> Back to Profile</button>  
+                <h2 style="margin-bottom: 16px;">Teacher Panel</h2>  
+                
+                <div class="wallet-card">  
+                    <h3>My Wallet Balance (Earnings)</h3>  
+                    <h1 id="teacher-wallet-balance">Rs 0</h1>  
+                    <button class="btn btn-warning" style="color:#000; font-weight:bold; width:100%;" onclick="requestTeacherWithdrawal()"><i class="fas fa-money-bill-wave"></i> Request Monthly Withdrawal (1st Date)</button>  
+                </div>  
+
+                <div class="grid-cards" style="margin-bottom:20px;">  
+                    <div class="card card-body"><h3 id="teacher-stat-courses">0</h3><p style="font-size:12px;color:var(--text-muted)">My Courses</p></div>  
+                    <div class="card card-body"><h3 id="teacher-stat-live">0</h3><p style="font-size:12px;color:var(--text-muted)">My Live Classes</p></div>  
+                </div>  
+                <div style="display:flex; flex-direction:column; gap:10px;">  
+                    <button class="btn btn-primary" onclick="openAdminCourseModal()"><i class="fas fa-book"></i> Add New Course</button>  
+                    <button class="btn btn-outline" onclick="openModal('modal-admin-manage-courses')"><i class="fas fa-edit"></i> Manage My Courses & Lessons</button>  
+                    <button class="btn btn-secondary" onclick="openAdminLiveModal()"><i class="fas fa-video"></i> Schedule Live Class</button>  
+                    <button class="btn btn-outline" onclick="openManageLiveModal()"><i class="fas fa-list"></i> Manage My Live Classes</button>  
+                </div>  
+            </div>  
+
+            <div id="screen-admin" class="screen">  
+                <button class="btn btn-outline" style="margin-bottom:16px;" onclick="goBack()"><i class="fas fa-arrow-left"></i> Back to Profile</button>  
+                <h2 style="margin-bottom: 16px;">Admin Panel</h2>  
+                <div class="grid-cards" style="margin-bottom:20px;">  
+                    <div class="card card-body"><h3 id="admin-stat-users">0</h3><p style="font-size:12px;color:var(--text-muted)">Total Users</p></div>  
+                    <div class="card card-body"><h3 id="admin-stat-courses">0</h3><p style="font-size:12px;color:var(--text-muted)">Total Courses</p></div>  
+                    <div class="card card-body"><h3 id="admin-stat-pending">0</h3><p style="font-size:12px;color:var(--text-muted)">Pending Payments</p></div>  
+                    <div class="card card-body"><h3 id="admin-stat-live">0</h3><p style="font-size:12px;color:var(--text-muted)">Live Classes</p></div>  
+                </div>  
+                <div style="display:flex; flex-direction:column; gap:10px;">  
+                    <button class="btn btn-primary" style="background:#4F46E5;" onclick="openModal('modal-admin-add-student')"><i class="fas fa-user-plus"></i> Add Custom Student</button>
+                    <button class="btn btn-primary" style="background:var(--warning); color:#000;" onclick="openAdminTeacherRequestsModal()"><i class="fas fa-id-card"></i> Verify Teacher Requests</button>  
+                    <button class="btn btn-primary" style="background:#8B5CF6;" onclick="openAdminTeacherBanksModal()"><i class="fas fa-university"></i> Manage Teacher Bank Accounts</button>  
+                    <button class="btn btn-primary" style="background:#059669;" onclick="openAdminWithdrawalsModal()"><i class="fas fa-money-check-alt"></i> Withdrawal Requests</button>  
+                    <button class="btn btn-primary" style="background:#2563EB;" onclick="openAdminApprovedHistoryModal()"><i class="fas fa-history"></i> Approved Payments History</button>  
+                    <button class="btn btn-primary" style="background:#D97706;" onclick="openAdminTeachersEarningsModal()"><i class="fas fa-chart-line"></i> Teachers Earnings Cards</button>  
+                    <button class="btn btn-primary" style="background:#0D9488;" onclick="openAdminStudentsActivityModal()"><i class="fas fa-users-cog"></i> Students Activity Tracking</button>  
+                    <button class="btn btn-primary" style="background:#3B82F6;" onclick="openManageTeachersModal()"><i class="fas fa-chalkboard-teacher"></i> Manage Teachers & Students</button>  
+                    <button class="btn btn-outline" onclick="openAdminBannersModal()"><i class="fas fa-images"></i> Manage Home Banners</button>  
+                    <button class="btn btn-primary" onclick="openAdminCourseModal()"><i class="fas fa-book"></i> Add New Course</button>  
+                    <button class="btn btn-outline" onclick="openModal('modal-admin-manage-courses')"><i class="fas fa-edit"></i> Manage Courses & Lessons</button>  
+                    <button class="btn btn-secondary" onclick="openAdminLiveModal()"><i class="fas fa-video"></i> Schedule Live Class</button>  
+                    <button class="btn btn-outline" onclick="openManageLiveModal()"><i class="fas fa-list"></i> Manage Live Classes</button>  
+                    <button class="btn btn-outline" onclick="openAdminPdfModal()"><i class="fas fa-file-pdf"></i> Manage PDF Books</button>  
+                    <button class="btn btn-outline" onclick="openModal('modal-admin-payments')"><i class="fas fa-wallet"></i> Manage Payments</button>  
+                    <button class="btn btn-outline" onclick="openModal('modal-admin-settings')"><i class="fas fa-cog"></i> Platform Settings</button>  
+                </div>  
+            </div>  
+
+        </main>  
+    </div>  
+</div>  
+
+<!-- MODALS -->  
+
+<!-- Admin: Add Custom Student Modal -->
+<div id="modal-admin-add-student" class="modal-overlay">  
+    <div class="modal-content">  
+        <div class="modal-header">  
+            <h3>Add Custom Student</h3>  
+            <button class="close-modal" onclick="closeTopModal()">&times;</button>  
+        </div>  
+        <div class="modal-body">  
+            <form onsubmit="event.preventDefault(); submitAdminAddStudent();">  
+                <div class="input-group"><label>Full Name</label><input type="text" id="aas-name" required></div>  
+                <div class="input-group"><label>Email</label><input type="email" id="aas-email" required></div>  
+                <div class="input-group"><label>Password</label><input type="password" id="aas-password" required minlength="6"></div>  
+                <button type="submit" class="btn btn-primary" style="width:100%;">Create Student Account</button>  
+            </form>  
+        </div>  
+    </div>  
+</div>
+
+<!-- Admin: Approved History Modal -->  
+<div id="modal-admin-approved-history" class="modal-overlay">  
+    <div class="modal-content">  
+        <div class="modal-header">  
+            <h3>Approved Payments Financial History</h3>  
+            <button class="close-modal" onclick="closeTopModal()">&times;</button>  
+        </div>  
+        <div class="modal-body" style="padding:0;">  
+            <div id="admin-approved-history-list"></div>  
+        </div>  
+    </div>  
+</div>  
+
+<!-- Admin: Teachers Earnings Cards Modal -->  
+<div id="modal-admin-teachers-earnings" class="modal-overlay">  
+    <div class="modal-content">  
+        <div class="modal-header">  
+            <h3>Teachers Earnings & Activity Cards</h3>  
+            <button class="close-modal" onclick="closeTopModal()">&times;</button>  
+        </div>  
+        <div class="modal-body" style="padding:0;">  
+            <div id="admin-teachers-earnings-list"></div>  
+        </div>  
+    </div>  
+</div>  
+
+<!-- Admin: Students Activity Modal -->  
+<div id="modal-admin-students-activity" class="modal-overlay">  
+    <div class="modal-content">  
+        <div class="modal-header">  
+            <h3>Students Activity Tracking</h3>  
+            <button class="close-modal" onclick="closeTopModal()">&times;</button>  
+        </div>  
+        <div class="modal-body" style="padding:0;">  
+            <div id="admin-students-activity-list"></div>  
+        </div>  
+    </div>  
+</div>  
+
+<div id="modal-checkout" class="modal-overlay">  
+    <div class="modal-content">  
+        <div class="modal-header">  
+            <h3>Enroll / Checkout</h3>  
+            <button class="close-modal" onclick="closeTopModal()">&times;</button>  
+        </div>  
+        <div class="modal-body">  
+            <div id="checkout-item-info" style="margin-bottom:16px; padding:12px; background:var(--bg-color); border-radius:8px;"></div>  
+              
+            <div id="checkout-payment-section">  
+                <p style="font-size:14px; font-weight:600; margin-bottom:8px;">Payment Instructions:</p>  
+                <div id="checkout-account-details" style="background:#FFFBEB; border:1px solid #FDE68A; padding:12px; border-radius:8px; margin-bottom:16px; font-size:13px; line-height: 1.5;"></div>  
+                <div class="input-group"><label>Payment Method Used</label><select id="checkout-method"><option value="easypaisa">EasyPaisa</option><option value="jazzcash">JazzCash</option><option value="bank">Bank Transfer</option></select></div>  
+                <div class="input-group"><label>Transaction ID (TID) / Reference No.</label><input type="text" id="checkout-tid" required placeholder="e.g. 1234567890"></div>  
+                <div class="input-group"><label>Payment Screenshot</label><input type="file" id="checkout-screenshot" accept="image/*" required></div>  
+            </div>  
+            <button class="btn btn-primary" style="width:100%; padding:14px;" onclick="submitPayment()">Submit Payment Details</button>  
+        </div>  
+    </div>  
+</div>  
+
+<div id="modal-edit-profile" class="modal-overlay">  
+    <div class="modal-content">  
+        <div class="modal-header">  
+            <h3>Edit Profile</h3>  
+            <button class="close-modal" onclick="closeTopModal()">&times;</button>  
+        </div>  
+        <div class="modal-body">  
+            <form onsubmit="event.preventDefault(); submitEditProfile();">  
+                <div class="input-group">  
+                    <label>Full Name</label>  
+                    <input type="text" id="ep-name" required>  
+                </div>  
+                <div class="input-group">  
+                    <label>Profile Picture (Can change once every 30 days)</label>  
+                    <input type="file" id="ep-avatar" accept="image/*">  
+                </div>  
+                <button type="submit" class="btn btn-primary" style="width:100%;">Save Changes</button>  
+            </form>  
+        </div>  
+    </div>  
+</div>  
+
+<div id="modal-teacher-verification" class="modal-overlay">  
+    <div class="modal-content">  
+        <div class="modal-header">  
+            <h3>Instructor Verification Form</h3>  
+            <button class="close-modal" onclick="closeTopModal()">&times;</button>  
+        </div>  
+        <div class="modal-body">  
+            <form onsubmit="event.preventDefault(); submitTeacherVerification();">  
+                <div class="input-group"><label>Full Name</label><input type="text" id="tv-name" required></div>  
+                <div class="input-group"><label>Father Name</label><input type="text" id="tv-fname" required></div>  
+                <div class="input-group"><label>WhatsApp Number</label><input type="text" id="tv-whatsapp" required placeholder="e.g. 03XXXXXXXXX"></div>  
+                <button type="submit" class="btn btn-primary" style="width:100%;">Submit Verification Request</button>  
+            </form>  
+        </div>  
+    </div>  
+</div>  
+
+<div id="modal-admin-teacher-banks" class="modal-overlay">  
+    <div class="modal-content">  
+        <div class="modal-header">  
+            <h3>Manage Teacher Bank / Account Info</h3>  
+            <button class="close-modal" onclick="closeTopModal()">&times;</button>  
+        </div>  
+        <div class="modal-body">  
+            <div class="input-group">  
+                <label>Select Verified Teacher</label>  
+                <select id="atb-teacher-select" onchange="loadSelectedTeacherBank()"></select>  
+            </div>  
+            <form onsubmit="event.preventDefault(); saveTeacherBankByAdmin();">  
+                <div class="input-group"><label>Bank / Account Provider Name</label><input type="text" id="atb-bank" required placeholder="e.g. Meezan Bank / EasyPaisa"></div>  
+                <div class="input-group"><label>Account Holder Name</label><input type="text" id="atb-holder" required></div>  
+                <div class="input-group"><label>Account / IBAN / Phone Number</label><input type="text" id="atb-number" required></div>  
+                <button type="submit" class="btn btn-primary" style="width:100%;">Save Teacher Account</button>  
+            </form>  
+        </div>  
+    </div>  
+</div>  
+
+<div id="modal-admin-withdrawals" class="modal-overlay">  
+    <div class="modal-content">  
+        <div class="modal-header">  
+            <h3>Teacher Withdrawal Requests</h3>  
+            <button class="close-modal" onclick="closeTopModal()">&times;</button>  
+        </div>  
+        <div class="modal-body" style="padding:0;">  
+            <div id="admin-withdrawals-list"></div>  
+        </div>  
+    </div>  
+</div>  
+
+<div id="modal-admin-teacher-requests" class="modal-overlay">  
+    <div class="modal-content">  
+        <div class="modal-header">  
+            <h3>Pending Teacher Verification Requests</h3>  
+            <button class="close-modal" onclick="closeTopModal()">&times;</button>  
+        </div>  
+        <div class="modal-body" style="padding:0;">  
+            <div id="admin-teacher-requests-list"></div>  
+        </div>  
+    </div>  
+</div>  
+
+<div id="modal-admin-teachers" class="modal-overlay">  
+    <div class="modal-content">  
+        <div class="modal-header">  
+            <h3>Manage Teachers & Students</h3>  
+            <button class="close-modal" onclick="closeTopModal()">&times;</button>  
+        </div>  
+        <div class="modal-body" style="padding: 0;">  
+            <div id="admin-teachers-list"></div>  
+        </div>  
+    </div>  
+</div>  
+
+<div id="modal-admin-settings" class="modal-overlay">  
+    <div class="modal-content">  
+        <div class="modal-header">  
+            <h3>Platform Settings</h3>  
+            <button class="close-modal" onclick="closeTopModal()">&times;</button>  
+        </div>  
+        <div class="modal-body">  
+            <div class="input-group">  
+                <label>ImgBB API Key (For Image Uploads)</label>  
+                <input type="text" id="admin-imgbb-key" placeholder="Enter API Key from api.imgbb.com">  
+            </div>  
+            <div class="input-group">  
+                <label>Lifetime PDF Package Price (Rs)</label>  
+                <input type="number" id="admin-pdf-package-price" value="0">  
+            </div>  
+            <div class="input-group">  
+                <label>Lifetime All Courses Package Price (Rs)</label>  
+                <input type="number" id="admin-all-courses-package-price" value="0">  
+            </div>  
+            <hr style="margin: 16px 0; border:0; border-top:1px solid var(--border-color);">
+            <p style="font-weight:600; margin-bottom:10px; color:var(--primary);">Admin Custom Payment Account (Default)</p>
+            <div class="input-group">  
+                <label>Bank / Provider Name</label>  
+                <input type="text" id="admin-bank-name" placeholder="e.g. EasyPaisa / JazzCash / Bank">  
+            </div>  
+            <div class="input-group">  
+                <label>Account Holder Name</label>  
+                <input type="text" id="admin-account-holder" placeholder="e.g. Nazim Mustafa">  
+            </div>  
+            <div class="input-group">  
+                <label>Account / Phone Number</label>  
+                <input type="text" id="admin-account-number" placeholder="e.g. 03105784772">  
+            </div>  
+            <button class="btn btn-primary" style="width:100%;" onclick="saveAdminSettings()">Save Settings</button>  
+        </div>  
+    </div>  
+</div>  
+
+<div id="modal-admin-banners" class="modal-overlay">  
+    <div class="modal-content">  
+        <div class="modal-header">  
+            <h3>Manage Home Banners</h3>  
+            <button class="close-modal" onclick="closeTopModal()">&times;</button>  
+        </div>  
+        <div class="modal-body">  
+            <form onsubmit="event.preventDefault(); submitAdminBanner();" style="border-bottom:1px solid var(--border-color); padding-bottom:16px; margin-bottom:16px;">  
+                <p style="font-weight:600; margin-bottom:10px;">Add New Banner</p>  
+                <div class="input-group"><label>Banner Image</label><input type="file" id="ab-image" accept="image/*" required></div>  
+                <div class="input-group"><label>Course Tag (e.g., 50% OFF, New)</label><input type="text" id="ab-tag" placeholder="Optional tag text"></div>  
+                <div class="input-group"><label>Link to Course</label><select id="ab-course"></select></div>  
+                <div class="input-group"><label>Special Banner Discount (%) (Override Price)</label><input type="number" id="ab-discount" placeholder="e.g. 20 for 20% OFF"></div>  
+                <button type="submit" class="btn btn-primary" style="width:100%;"><i class="fas fa-upload"></i> Upload Banner</button>  
+            </form>  
+            <div id="admin-banners-list"></div>  
+        </div>  
+    </div>  
+</div>  
+
+<div id="modal-admin-live" class="modal-overlay">  
+    <div class="modal-content">  
+        <div class="modal-header">  
+            <h3 id="admin-live-modal-title">Schedule Live Class</h3>  
+            <button class="close-modal" onclick="closeTopModal()">&times;</button>  
+        </div>  
+        <div class="modal-body">  
+            <form onsubmit="event.preventDefault(); submitAdminLiveClass();">  
+                
+                <div id="admin-only-live-options" style="display:none; background:#f3f4f6; padding:12px; border-radius:8px; margin-bottom:16px;">
+                    <p style="font-size:12px; font-weight:bold; color:var(--danger); margin-bottom:10px;"><i class="fas fa-lock"></i> Admin Only Package Details</p>
+                    <div class="input-group" style="margin-bottom:8px;">
+                        <label>Class Frequency</label>
+                        <select id="alc-freq">
+                            <option value="">Standard (No Frequency Set)</option>
+                            <option value="Daily">Daily</option>
+                            <option value="Weekly 1 Day">Weekly 1 Day</option>
+                            <option value="Weekly 2 Days">Weekly 2 Days</option>
+                            <option value="Weekly 3 Days">Weekly 3 Days</option>
+                            <option value="Monthly 1 Time">Monthly 1 Time</option>
+                        </select>
+                    </div>
+                    <div class="input-group" style="margin-bottom:0;">
+                        <label>Package Validity</label>
+                        <select id="alc-validity">
+                            <option value="">Lifetime / Single Session</option>
+                            <option value="1 Month">1 Month</option>
+                            <option value="3 Months">3 Months</option>
+                            <option value="6 Months">6 Months</option>
+                            <option value="1 Year">1 Year</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="input-group"><label>Class Title</label><input type="text" id="alc-title" required></div>  
+                <div class="input-group">
+                    <label>Class Days (Weekly)</label>
+                    <div class="days-checkboxes">
+                        <label><input type="checkbox" name="alc-day" value="Mon"> <span>Mon</span></label>
+                        <label><input type="checkbox" name="alc-day" value="Tue"> <span>Tue</span></label>
+                        <label><input type="checkbox" name="alc-day" value="Wed"> <span>Wed</span></label>
+                        <label><input type="checkbox" name="alc-day" value="Thu"> <span>Thu</span></label>
+                        <label><input type="checkbox" name="alc-day" value="Fri"> <span>Fri</span></label>
+                        <label><input type="checkbox" name="alc-day" value="Sat"> <span>Sat</span></label>
+                        <label><input type="checkbox" name="alc-day" value="Sun"> <span>Sun</span></label>
+                    </div>
+                </div>
+                <div class="input-group"><label>Class Thumbnail</label><input type="file" id="alc-thumb" accept="image/*"></div>  
+                <div class="input-group"><label>Google Meet / Zoom Link</label><input type="url" id="alc-link" required></div>  
+                <div class="input-group">  
+                    <label>Access Type</label>  
+                    <select id="alc-type" required onchange="document.getElementById('alc-price-group').style.display = this.value === 'paid' ? 'block' : 'none'">  
+                        <option value="free">Free for all</option>  
+                        <option value="paid">Paid Access</option>  
+                    </select>  
+                </div>  
+                <div class="input-group" id="alc-price-group" style="display:none;"><label>Price (Rs)</label><input type="number" id="alc-price" value="0"></div>  
+                <div class="input-group"><label>Scheduled Date</label><input type="date" id="alc-date" required></div>  
+                <div class="input-group"><label>Start Time</label><input type="time" id="alc-time" required></div>  
+                <div class="input-group"><label>End Time</label><input type="time" id="alc-endtime" required></div>  
+                <button type="submit" id="alc-submit-btn" class="btn btn-secondary" style="width:100%;">Create Live Session</button>  
+            </form>  
+        </div>  
+    </div>  
+</div>  
+
+<div id="modal-manage-live" class="modal-overlay">  
+    <div class="modal-content">  
+        <div class="modal-header">  
+            <h3>Manage Live Classes</h3>  
+            <button class="close-modal" onclick="closeTopModal()">&times;</button>  
+        </div>  
+        <div class="modal-body" style="padding:0;">  
+            <div id="admin-manage-live-list"></div>  
+        </div>  
+    </div>  
+</div>  
+
+<div id="modal-admin-pdf" class="modal-overlay">  
+    <div class="modal-content">  
+        <div class="modal-header">  
+            <h3>Manage PDF Books</h3>  
+            <button class="close-modal" onclick="closeTopModal()">&times;</button>  
+        </div>  
+        <div class="modal-body">  
+            <form onsubmit="event.preventDefault(); submitAdminPdf();" style="border-bottom:1px solid var(--border-color); padding-bottom:16px; margin-bottom:16px;">  
+                <p style="font-weight:600; margin-bottom:10px;">Add New PDF Book</p>  
+                <div class="input-group"><label>Book Title</label><input type="text" id="ap-title" required></div>  
+                <div class="input-group"><label>Google Drive Public Link</label><input type="url" id="ap-link" required placeholder="https://drive.google.com/file/d/.../view"></div>  
+                <div class="input-group"><label>Cover Image (ImgBB)</label><input type="file" id="ap-thumb" accept="image/*" required></div>  
+                <div class="input-group">  
+                    <label>Access Type</label>  
+                    <select id="ap-type" required onchange="document.getElementById('ap-price-group').style.display = this.value === 'paid' ? 'block' : 'none'">  
+                        <option value="free">Free</option>  
+                        <option value="paid">Paid</option>  
+                    </select>  
+                </div>  
+                <div class="input-group" id="ap-price-group" style="display:none;"><label>Price (Rs)</label><input type="number" id="ap-price" value="0"></div>  
+                <button type="submit" class="btn btn-primary" style="width:100%; background:var(--purple);"><i class="fas fa-upload"></i> Upload Book</button>  
+            </form>  
+            <div id="admin-pdf-list"></div>  
+        </div>  
+    </div>  
+</div>  
+
+<div id="modal-admin-course" class="modal-overlay">  
+    <div class="modal-content">  
+        <div class="modal-header">  
+            <h3 id="admin-course-modal-title">Add New Course</h3>  
+            <button class="close-modal" onclick="closeTopModal()">&times;</button>  
+        </div>  
+        <div class="modal-body">  
+            <form onsubmit="event.preventDefault(); submitAdminCourse();">  
+                <div class="input-group"><label>Course Title</label><input type="text" id="ac-title" required></div>  
+                <div class="input-group"><label>Description</label><textarea id="ac-desc" rows="3" required></textarea></div>  
+                <div class="input-group">  
+                    <label>Course Type</label>  
+                    <select id="ac-type" required>  
+                        <option value="free">Free</option>  
+                        <option value="paid">Paid</option>  
+                        <option value="video">Video Course (Paid)</option>  
+                    </select>  
+                </div>  
+                <div class="input-group"><label>Original Price (Rs)</label><input type="number" id="ac-original-price" value="0" placeholder="e.g. 5000"></div>  
+                <div class="input-group"><label>Discount / Sale Price (Rs)</label><input type="number" id="ac-price" value="0" placeholder="e.g. 2500"></div>  
+                  
+                <div class="input-group">  
+                    <label>Display Size (Mobile)</label>  
+                    <select id="ac-layout" required>  
+                        <option value="half">Half Width (2 courses per line)</option>  
+                        <option value="full">Full Width (1 big course per line)</option>  
+                    </select>  
+                </div>  
+                  
+                <div class="input-group"><label>Thumbnail Image</label><input type="file" id="ac-thumb" accept="image/*"></div>  
+                <button type="submit" class="btn btn-primary" style="width:100%;">Save Course</button>  
+            </form>  
+        </div>  
+    </div>  
+</div>  
+
+<div id="modal-admin-manage-courses" class="modal-overlay">  
+    <div class="modal-content">  
+        <div class="modal-header">  
+            <h3>Manage Courses</h3>  
+            <button class="close-modal" onclick="closeTopModal()">&times;</button>  
+        </div>  
+        <div class="modal-body" style="padding: 0;">  
+            <div id="admin-manage-courses-list"></div>  
+        </div>  
+    </div>  
+</div>  
+
+<div id="modal-admin-manage-lessons" class="modal-overlay">  
+    <div class="modal-content">  
+        <div class="modal-header">  
+            <h3>Manage Lessons</h3>  
+            <button class="close-modal" onclick="closeTopModal()">&times;</button>  
+        </div>  
+        <div class="modal-body">  
+            <div id="lesson-add-permission-notice" class="hidden" style="background:#FEE2E2; color:#991B1B; padding:10px; border-radius:8px; font-size:13px; margin-bottom:16px;">  
+                <i class="fas fa-lock"></i> Aap kisi dusre teacher ke course mein lesson add ya edit nahi kar sakte.  
+            </div>  
+            <form id="form-admin-add-lesson" onsubmit="event.preventDefault(); submitAdminLesson();" style="margin-bottom: 20px; border-bottom:1px solid var(--border-color); padding-bottom:16px;">  
+                <p style="font-weight:600; margin-bottom:10px;">Add New Lesson</p>  
+                <div class="input-group"><label>Lecture Title</label><input type="text" id="al-title" required></div>  
+                <div class="input-group"><label>Video URL (Google Drive, MP4, or YouTube)</label><input type="url" id="al-url" required placeholder="https://youtu.be/... or Drive link"></div>  
+                <button type="submit" class="btn btn-secondary" style="width:100%;"><i class="fas fa-plus"></i> Add Lesson</button>  
+            </form>  
+            <div id="admin-manage-lessons-list"></div>  
+        </div>  
+    </div>  
+</div>  
+
+<div id="modal-admin-payments" class="modal-overlay">  
+    <div class="modal-content">  
+        <div class="modal-header">  
+            <h3>Pending Payments</h3>  
+            <button class="close-modal" onclick="closeTopModal()">&times;</button>  
+        </div>  
+        <div class="modal-body" id="admin-payments-list"></div>  
+    </div>  
+</div>  
+
+<div id="modal-add-post" class="modal-overlay">  
+    <div class="modal-content">  
+        <div class="modal-header">  
+            <h3>Create Post</h3>  
+            <button class="close-modal" onclick="closeTopModal()">&times;</button>  
+        </div>  
+        <div class="modal-body">  
+            <div class="input-group">  
+                <label>Description (Max 300 words)</label>  
+                <textarea id="cp-text" rows="4" required placeholder="What's on your mind?" oninput="checkWordLimit(this)"></textarea>  
+                <small id="word-count-hint" style="color:var(--text-muted); font-size:11px;">0 / 300 words</small>  
+            </div>  
+            <div class="input-group"><label>Attach Image (Optional)</label><input type="file" id="cp-image" accept="image/*"></div>  
+              
+            <div class="input-group hidden" id="cp-admin-fakelikes">  
+                <label>Initial Fake Likes (Admin Only)</label>  
+                <input type="number" id="cp-fakelikes" value="0">  
+            </div>  
+            <button type="button" class="btn btn-primary" style="width:100%;" onclick="submitCommunityPost()">Post to Community</button>  
+        </div>  
+    </div>  
+</div>  
+
+<div id="modal-notifications" class="modal-overlay">  
+    <div class="modal-content">  
+        <div class="modal-header">  
+            <h3>Notifications</h3>  
+            <button class="close-modal" onclick="closeTopModal()">&times;</button>  
+        </div>  
+        <div class="modal-body" id="notifications-list">  
+            <p style="text-align:center; color:var(--text-muted); font-size:14px;">No new notifications</p>  
+        </div>  
+    </div>  
+</div>  
+
+<script type="module">  
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";  
+    import {   
+        getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword,   
+        signOut, onAuthStateChanged, updateProfile, GoogleAuthProvider, signInWithPopup   
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";  
+    import {   
+        getDatabase, ref, set, get, update, remove, push, onValue  
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";  
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyCCjpzGDUgerMWwN9QpNuwrvQRH2W57qiE",
+        authDomain: "food-c41d4.firebaseapp.com",
+        databaseURL: "https://food-c41d4-default-rtdb.firebaseio.com",
+        projectId: "food-c41d4",
+        storageBucket: "food-c41d4.firebasestorage.app",
+        messagingSenderId: "731774736265",
+        appId: "1:731774736265:web:1d5618f677b68dfea6f358",
+        measurementId: "G-4CSYKRCWNN"
+    };
+    const ADMIN_EMAIL = "kazimmustafa38@gmail.com";  
+
+    const app = initializeApp(firebaseConfig);  
+    const auth = getAuth(app);  
+    const db = getDatabase(app);  
+
+    window.currentUser = null;  
+    window.isAdmin = false;  
+    window.isTeacher = false;  
+    window.activeItemContext = null;   
+    window.currentExploreFilter = 'all';  
+      
+    let navigationStack = [];  
+    let activeModals = [];  
+    window.currentZIndex = 50; 
+
+    let allCourses = [];  
+    let allLiveClasses = [];  
+    let allPdfBooks = [];  
+    let allBanners = [];  
+    let pdfPackagePrice = 0;  
+    let allCoursesPackagePrice = 0;
+    let adminBankDetails = { bankName: 'EasyPaisa / JazzCash / Bank', holderName: 'Nazim Mustafa', accountNumber: '03105784772' };
+      
+    let isAppStarted = false;  
+    let IMGBB_API_KEY = "";   
+    let sliderInterval = null;  
+    let currentSlideIndex = 0;  
+
+    let allCommunityPosts = [];  
+    let visibleCommunityLimit = 10;   
+    window.userSavedPosts = {};   
+
+    window.courseAccessList = {};  
+    window.liveAccessList = {};  
+    window.pdfAccessList = {};  
+    window.hasLifetimePdfAccess = false;  
+    window.hasLifetimeAllCoursesAccess = false;
+    window.teacherBankAccounts = {};
+    window.teacherWallets = {};
+    window.allUsersList = {};
+
+    let editCourseId = null;  
+    let editLiveClassId = null;
+    let oldLiveThumbUrl = "";
+    let manageLessonsCourseId = null;  
+    let oldThumbnailUrl = "";  
+
+    window.showToast = function(message, type = "info") {  
+        const container = document.getElementById('toast-container');  
+        if(!container) return;  
+        const toast = document.createElement('div');  
+        toast.className = 'toast';  
+        toast.style.backgroundColor = type === "error" ? "var(--danger)" : type === "success" ? "var(--secondary)" : "#333";  
+        toast.innerText = message;  
+        container.appendChild(toast);  
+        setTimeout(() => { toast.remove(); }, 3500);  
+    };  
+
+    window.showLoader = function() { const el = document.getElementById('global-loader'); if(el) el.style.display = 'flex'; };  
+    window.hideLoader = function() { const el = document.getElementById('global-loader'); if(el) el.style.display = 'none'; };  
+
+    function getActiveScreen() { return document.querySelector('.screen.active')?.id || null; }  
+
+    window.navigateTo = function(screenId, params = {}, pushToHistory = true) {  
+        const current = getActiveScreen();  
+        if (current === screenId) return;   
+        if (current && pushToHistory && current !== 'screen-login' && current !== 'screen-register') {  
+            navigationStack.push({ id: current, params: window.currentParams || {} });  
+            history.pushState({ screenId }, "");  
+        }  
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));  
+        document.querySelectorAll('.nav-item').forEach(n => { n.classList.toggle('active', n.getAttribute('data-target') === screenId); });  
+          
+        const homeSearch = document.getElementById('home-search-input');  
+        const exploreSearch = document.getElementById('explore-search-input');  
+        if(homeSearch) homeSearch.value = "";  
+        if(exploreSearch) exploreSearch.value = "";  
+
+        const target = document.getElementById(screenId);  
+        if(target) target.classList.add('active');  
+          
+        window.currentParams = params;  
+        renderScreenData(screenId, params);  
+    };  
+
+    window.goBack = function() {  
+        const overlay = document.getElementById('fullscreen-video-overlay');  
+        if(overlay && !overlay.classList.contains('hidden')){ closeFullscreenVideo(); return; }  
+        if (activeModals.length > 0) { closeTopModal(); return; }  
+        if (navigationStack.length > 0) {   
+            const prev = navigationStack.pop();   
+            window.navigateTo(prev.id, prev.params, false);   
+        } else { history.back(); }  
+    };  
+
+    window.addEventListener('popstate', (e) => {  
+        const overlay = document.getElementById('fullscreen-video-overlay');  
+        if(overlay && !overlay.classList.contains('hidden')){ closeFullscreenVideo(); history.pushState(null, ""); return; }  
+        if (activeModals.length > 0) { closeTopModal(); history.pushState(null, ""); return; }  
+        if (navigationStack.length > 0) { const prev = navigationStack.pop(); window.navigateTo(prev.id, prev.params, false); }  
+    });  
+
+    window.openModal = function(modalId) {  
+        const modal = document.getElementById(modalId);  
+        if(modal) { 
+            window.currentZIndex += 10;
+            modal.style.zIndex = window.currentZIndex;
+            modal.classList.add('active'); 
+            activeModals.push(modalId); 
+            history.pushState({ modal: true }, ""); 
+        }  
+    };  
+
+    window.closeTopModal = function() {  
+        if(activeModals.length === 0) {
+            document.querySelectorAll('.modal-overlay.active').forEach(m => {
+                m.classList.remove('active');
+                m.style.zIndex = '';
+            });
+            window.currentZIndex = 50;
+            return false;
+        }
+        const modalId = activeModals.pop();  
+        const modal = document.getElementById(modalId);  
+        if(modal) {
+            modal.classList.remove('active');
+            modal.style.zIndex = '';
+            window.currentZIndex -= 10;
+        }
+        return true;  
+    };  
+
+    window.handleScroll = function() {  
+        if(getActiveScreen() !== 'screen-community') return;  
+        const content = document.getElementById('main-content');  
+        if(!content) return;  
+        if(content.scrollTop + content.clientHeight >= content.scrollHeight - 50) {  
+            if(visibleCommunityLimit < allCommunityPosts.length) {  
+                const loader = document.getElementById('community-loader');  
+                if(loader) loader.style.display = 'block';  
+                setTimeout(() => { visibleCommunityLimit += 5; renderCommunityFeed(); }, 500);  
+            }  
+        }  
+    };  
+
+    window.uploadToImgBB = async function(fileElementId) {  
+        const fileInput = document.getElementById(fileElementId);  
+        if(!fileInput || !fileInput.files || fileInput.files.length === 0) return null;  
+        if(!IMGBB_API_KEY) { showToast("ImgBB API Key missing in Settings.", "error"); return null; }  
+
+        const file = fileInput.files[0];  
+        const formData = new FormData();  
+        formData.append("image", file);  
+        try {  
+            const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData });  
+            const data = await res.json();  
+            if(data.success) return data.data.url;  
+            throw new Error("Upload Failed");  
+        } catch(e) { showToast("Upload Failed. Check network.", "error"); return null; }  
+    };  
+
+    function initPublicListeners() {  
+        onValue(ref(db, 'settings'), (snap) => {  
+            if(snap.exists()) {  
+                const data = snap.val();  
+                IMGBB_API_KEY = data.imgbb_api_key || "";  
+                pdfPackagePrice = data.pdf_package_price || 0;  
+                allCoursesPackagePrice = data.all_courses_package_price || 0;
+                if(data.admin_bank) adminBankDetails = data.admin_bank;
+                  
+                const adminKey = document.getElementById('admin-imgbb-key');  
+                const packageEl = document.getElementById('admin-pdf-package-price');  
+                const allPackageEl = document.getElementById('admin-all-courses-package-price');
+                const publicPriceEl = document.getElementById('books-package-price');  
+                const publicAllPriceEl = document.getElementById('home-all-courses-price');
+                  
+                if(window.isAdmin && adminKey) adminKey.value = IMGBB_API_KEY;  
+                if(window.isAdmin && packageEl) packageEl.value = pdfPackagePrice;  
+                if(window.isAdmin && allPackageEl) allPackageEl.value = allCoursesPackagePrice;
+                if(publicPriceEl) publicPriceEl.innerText = `Rs ${pdfPackagePrice}`;  
+                if(publicAllPriceEl) publicAllPriceEl.innerText = `Rs ${allCoursesPackagePrice}`;
+
+                if(window.isAdmin) {
+                    const bName = document.getElementById('admin-bank-name');
+                    const bHolder = document.getElementById('admin-account-holder');
+                    const bNumber = document.getElementById('admin-account-number');
+                    if(bName) bName.value = adminBankDetails.bankName || "";
+                    if(bHolder) bHolder.value = adminBankDetails.holderName || "";
+                    if(bNumber) bNumber.value = adminBankDetails.accountNumber || "";
+                }
+            }  
+        });  
+
+        onValue(ref(db, 'teacher_bank_accounts'), (snap) => {  
+            window.teacherBankAccounts = snap.exists() ? snap.val() : {};  
+        });  
+
+        onValue(ref(db, 'teacher_wallets'), (snap) => {  
+            window.teacherWallets = snap.exists() ? snap.val() : {};  
+        });  
+
+        onValue(ref(db, 'users'), (snap) => {  
+            window.allUsersList = snap.exists() ? snap.val() : {};  
+            if(window.isAdmin) populateAdminTeacherDropdown();  
+        });  
+
+        onValue(ref(db, 'home_banners'), (snap) => {  
+            allBanners = [];  
+            if(snap.exists()) { snap.forEach(c => { allBanners.push({ id: c.key, ...c.val() }); }); }  
+            if(getActiveScreen() === 'screen-home') renderHomeSlider();  
+            if(window.isAdmin) renderAdminBannersList();  
+        });  
+
+        onValue(ref(db, 'live_classes'), (snap) => {  
+            allLiveClasses = [];  
+            if(snap.exists()){ snap.forEach(c => { allLiveClasses.push({id: c.key, ...c.val()}); }); }  
+              
+            const adminStatLive = document.getElementById('admin-stat-live');  
+            if(window.isAdmin && adminStatLive) adminStatLive.innerText = allLiveClasses.length;  
+              
+            const teacherStatLive = document.getElementById('teacher-stat-live');  
+            if(window.isTeacher && window.currentUser && teacherStatLive) {  
+                const myLive = allLiveClasses.filter(c => c.instructorId === window.currentUser.uid);  
+                teacherStatLive.innerText = myLive.length;  
+            }  
+              
+            if(getActiveScreen() === 'screen-home') renderHome();  
+            if(getActiveScreen() === 'screen-explore') window.filterExplore(window.currentExploreFilter || 'all');  
+        });  
+
+        onValue(ref(db, 'courses'), (snapshot) => {  
+            allCourses = [];  
+            if(snapshot.exists()) { snapshot.forEach(child => { allCourses.push({ id: child.key, ...child.val() }); }); }  
+              
+            if(window.isAdmin || window.isTeacher) {  
+                renderManageCoursesList();  
+                populateAdminBannerCourseDropdown();  
+            }  
+            if(window.isAdmin) { updateAdminDashboard(); }  
+              
+            const teacherStatCourses = document.getElementById('teacher-stat-courses');  
+            if(window.isTeacher && window.currentUser && teacherStatCourses) {  
+                const myCourses = allCourses.filter(c => c.instructorId === window.currentUser.uid);  
+                teacherStatCourses.innerText = myCourses.length;  
+            }  
+
+            if(getActiveScreen() === 'screen-home') { renderHome(); renderHomeSlider(); }  
+            if(getActiveScreen() === 'screen-explore') window.filterExplore(window.currentExploreFilter || 'all');  
+            hideLoader();  
+        }, () => hideLoader());  
+
+        onValue(ref(db, 'pdf_books'), (snap) => {  
+            allPdfBooks = [];  
+            if(snap.exists()) { snap.forEach(child => { allPdfBooks.push({ id: child.key, ...child.val() }); }); }  
+            if(window.isAdmin) renderAdminPdfList();  
+            if(getActiveScreen() === 'screen-books') renderBooksLibrary();  
+        });  
+
+        onValue(ref(db, 'community'), (snap) => {  
+            allCommunityPosts = [];  
+            if(snap.exists()) {  
+                snap.forEach(c => { allCommunityPosts.push({id: c.key, ...c.val()}); });  
+                allCommunityPosts.sort((a,b) => b.timestamp - a.timestamp);  
+            }  
+            if(getActiveScreen() === 'screen-community') renderCommunityFeed();  
+        });  
+    }  
+
+    function initPrivateListeners() {  
+        if(!window.currentUser) return;  
+          
+        onValue(ref(db, `users/${window.currentUser.uid}`), async (snap) => {   
+            let data = snap.exists() ? snap.val() : null;  
+            if (!data) {  
+                data = {  
+                    name: window.currentUser.displayName || "Student",  
+                    email: window.currentUser.email || "",  
+                    avatar: window.currentUser.photoURL || "",  
+                    isTeacher: false,  
+                    lifetimePdfAccess: false,  
+                    lifetimeAllCoursesAccess: false,
+                    createdAt: Date.now()  
+                };  
+                await set(ref(db, `users/${window.currentUser.uid}`), data);  
+            }  
+            window.isTeacher = data && data.isTeacher === true;  
+            window.hasLifetimePdfAccess = data && data.lifetimePdfAccess === true;  
+            window.hasLifetimeAllCoursesAccess = data && data.lifetimeAllCoursesAccess === true;
+            if(data && data.saved) window.userSavedPosts = data.saved; else window.userSavedPosts = {};  
+              
+            renderProfileView(data);   
+            if(getActiveScreen() === 'screen-books') renderBooksLibrary();  
+        });  
+
+        onValue(ref(db, `teacher_wallets/${window.currentUser.uid}`), (snap) => {  
+            const wallet = snap.exists() ? snap.val() : { balance: 0 };  
+            const balEl = document.getElementById('teacher-wallet-balance');  
+            if(balEl) balEl.innerText = `Rs ${wallet.balance || 0}`;  
+        });  
+          
+        onValue(ref(db, `course_access/${window.currentUser.uid}`), (snap) => {  
+            window.courseAccessList = snap.exists() ? snap.val() : {};  
+            const container = document.getElementById('my-courses-list');  
+            if(container) {  
+                container.innerHTML = '';  
+                let count = 0;  
+                allCourses.forEach(course => {
+                    const isOwned = window.hasLifetimeAllCoursesAccess || (window.courseAccessList[course.id] && window.courseAccessList[course.id].status === 'active');
+                    if(isOwned) { count++; container.innerHTML += createCourseCard(course, true); }
+                });
+                if(count === 0) container.innerHTML = `<p style="grid-column: 1/-1; font-size:14px; color:var(--text-muted); text-align:center;">You haven't enrolled in any courses yet.</p>`;  
+            }  
+        });  
+
+        onValue(ref(db, `live_access/${window.currentUser.uid}`), (snap) => { window.liveAccessList = snap.exists() ? snap.val() : {}; });  
+        onValue(ref(db, `pdf_access/${window.currentUser.uid}`), (snap) => { window.pdfAccessList = snap.exists() ? snap.val() : {}; if(getActiveScreen() === 'screen-books') renderBooksLibrary(); });  
+
+        if(window.isAdmin) {  
+            const fakeLikesNode = document.getElementById('cp-admin-fakelikes');  
+            if(fakeLikesNode) fakeLikesNode.classList.remove('hidden');  
+              
+            onValue(ref(db, 'payment_requests'), (snap) => {  
+                let pending = 0;  
+                const list = document.getElementById('admin-payments-list');  
+                if(list) list.innerHTML = '';  
+                if(snap.exists()){  
+                    snap.forEach(child => {  
+                        const req = { id: child.key, ...child.val() };  
+                        if(req.status === 'pending') {  
+                            pending++;  
+                            if(list) {  
+                                let itemLabel = "Course";  
+                                if(req.itemType === 'live') itemLabel = "Live Class";  
+                                if(req.itemType === 'pdf') itemLabel = "PDF Book";  
+                                if(req.itemType === 'package') itemLabel = "PDF Package";  
+                                if(req.itemType === 'all_courses_package') itemLabel = "VIP All Courses Package";
+
+                                list.innerHTML += `  
+                                    <div style="border:1px solid var(--border-color); padding:12px; border-radius:8px; margin-bottom:10px; background:#F9FAFB;">  
+                                        <p style="font-size:13px;"><strong>Item (${itemLabel}):</strong> ${req.itemName || req.itemId}</p>  
+                                        <p style="font-size:13px;"><strong>User:</strong> ${req.email}</p>  
+                                        <p style="font-size:13px;"><strong>TID:</strong> ${req.transactionId}</p>  
+                                        <a href="${req.screenshotUrl}" target="_blank" style="color:var(--primary); font-size:13px; font-weight:600; display:block; margin: 8px 0;">View Screenshot</a>  
+                                        <div style="display:flex; gap:8px; margin-top:8px;">  
+                                            <button class="btn btn-secondary" style="flex:1;" onclick="approvePayment('${req.id}', '${req.uid}', '${req.itemId}', '${req.itemType || 'course'}', '${req.instructorId || 'admin'}', ${req.amount || 0}, '${req.email || 'User'}', '${req.itemName || ''}')">Approve</button>  
+                                            <button class="btn btn-danger" style="flex:1;" onclick="rejectPayment('${req.id}')">Reject</button>  
+                                        </div>  
+                                    </div>  
+                                `;  
+                            }  
+                        }  
+                    });  
+                }  
+                const statNode = document.getElementById('admin-stat-pending');  
+                if(statNode) statNode.innerText = pending;  
+            });  
+
+            onValue(ref(db, 'withdrawal_requests'), (snap) => {  
+                const list = document.getElementById('admin-withdrawals-list');  
+                if(!list) return;  
+                list.innerHTML = '';  
+                if(snap.exists()) {  
+                    let html = "";  
+                    snap.forEach(child => {  
+                        const wr = { id: child.key, ...child.val() };  
+                        if(wr.status === 'pending') {  
+                            html += `  
+                                <div class="list-row" style="flex-direction:column; align-items:flex-start; gap:6px;">  
+                                    <div><strong>Teacher Name:</strong> ${wr.teacherName}</div>  
+                                    <div><strong>Requested Amount:</strong> Rs ${wr.amount}</div>  
+                                    <div><strong>Bank Info:</strong> ${wr.bankName} | ${wr.holderName} | ${wr.accountNumber}</div>  
+                                    <div style="display:flex; gap:8px; width:100%; margin-top:6px;">  
+                                        <button class="btn btn-secondary btn-sm" style="flex:1;" onclick="approveWithdrawal('${wr.id}', '${wr.teacherUid}', ${wr.amount})">Mark Paid / Complete</button>  
+                                        <button class="btn btn-danger btn-sm" style="flex:1;" onclick="rejectWithdrawal('${wr.id}')">Reject</button>  
+                                    </div>  
+                                </div>  
+                            `;  
+                        }  
+                    });  
+                    list.innerHTML = html || '<p style="padding:16px; text-align:center;">No pending withdrawal requests.</p>';  
+                } else {  
+                    list.innerHTML = '<p style="padding:16px; text-align:center;">No pending withdrawal requests.</p>';  
+                }  
+            });  
+        }  
+    }  
+
+    onAuthStateChanged(auth, (user) => {  
+        if (user) {  
+            window.currentUser = user;  
+            const uEmail = user.email ? user.email.trim().toLowerCase() : "";  
+            const aEmail = ADMIN_EMAIL.trim().toLowerCase();  
+            window.isAdmin = (uEmail === aEmail);  
+              
+            const fakeLikesNode = document.getElementById('cp-admin-fakelikes');  
+            if(fakeLikesNode) {  
+                if(window.isAdmin) fakeLikesNode.classList.remove('hidden');  
+                else fakeLikesNode.classList.add('hidden');  
+            }  
+
+            initPrivateListeners();  
+            if(getActiveScreen() === 'screen-login' || getActiveScreen() === 'screen-register') navigateTo('screen-home', {}, false);  
+        } else {  
+            window.currentUser = null; window.isAdmin = false; window.isTeacher = false; window.userSavedPosts = {}; window.hasLifetimePdfAccess = false; window.hasLifetimeAllCoursesAccess = false; 
+            window.courseAccessList = {}; window.liveAccessList = {}; window.pdfAccessList = {};  
+              
+            const fakeLikesNode = document.getElementById('cp-admin-fakelikes');  
+            if(fakeLikesNode) fakeLikesNode.classList.add('hidden');  
+
+            const list = document.getElementById('my-courses-list');  
+            if(list) {  
+                list.innerHTML = `  
+                    <div style="grid-column: 1/-1; text-align:center; padding: 30px 10px;">  
+                        <p style="color:var(--text-muted); margin-bottom:16px;">Please login to view your courses.</p>  
+                        <button class="btn btn-primary" onclick="navigateTo('screen-login')">Login Now</button>  
+                    </div>`;  
+            }  
+            renderProfileView(null);  
+        }  
+        if(!isAppStarted) { isAppStarted = true; initPublicListeners(); }  
+    });  
+
+    window.handleLogin = async function() {  
+        showLoader();  
+        const eEl = document.getElementById('login-email');  
+        const pEl = document.getElementById('login-password');  
+        if(!eEl || !pEl) return;  
+        try {   
+            await signInWithEmailAndPassword(auth, eEl.value.trim(), pEl.value);   
+            showToast("Logged in", "success");   
+        } catch(err) { showToast("Invalid email/password", "error"); }  
+        hideLoader();  
+    };  
+
+    window.handleRegister = async function() {  
+        showLoader();  
+        const nEl = document.getElementById('reg-name'), eEl = document.getElementById('reg-email'), pEl = document.getElementById('reg-password');  
+        if(!nEl || !eEl || !pEl) return;  
+        try {  
+            const cred = await createUserWithEmailAndPassword(auth, eEl.value.trim(), pEl.value);  
+            await updateProfile(cred.user, { displayName: nEl.value.trim() });  
+            await set(ref(db, `users/${cred.user.uid}`), { name: nEl.value.trim(), email: eEl.value.trim(), isTeacher: false, lifetimePdfAccess: false, lifetimeAllCoursesAccess: false, createdAt: Date.now() });  
+            showToast("Account Created", "success");  
+        } catch(err) { showToast("Registration failed", "error"); }  
+        hideLoader();  
+    };  
+
+    window.handleGoogleSignIn = async function() {  
+        showLoader();  
+        try {  
+            const provider = new GoogleAuthProvider();  
+            const result = await signInWithPopup(auth, provider);  
+            const user = result.user;  
+              
+            const userRef = ref(db, `users/${user.uid}`);  
+            const snap = await get(userRef);  
+            if (!snap.exists()) {  
+                await set(userRef, {  
+                    name: user.displayName || "Student",  
+                    email: user.email || "",  
+                    avatar: user.photoURL || "",  
+                    isTeacher: false,  
+                    lifetimePdfAccess: false,  
+                    lifetimeAllCoursesAccess: false,
+                    createdAt: Date.now()  
+                });  
+            }  
+            showToast("Google Sign-In Successful!", "success");  
+            navigateTo('screen-home', {}, false);  
+        } catch (err) {  
+            showToast("Google Sign-In Failed", "error");  
+        }  
+        hideLoader();  
+    };  
+
+    window.handleLogout = async function() { showLoader(); try { await signOut(auth); navigateTo('screen-home', {}, false); showToast("Logged out"); } catch(e){} hideLoader(); };  
+
+    window.submitAdminAddStudent = async function() {
+        if(!window.isAdmin) return;
+        showLoader();
+        try {
+            const name = document.getElementById('aas-name').value.trim();
+            const email = document.getElementById('aas-email').value.trim();
+            const password = document.getElementById('aas-password').value;
+
+            const secondaryApp = initializeApp(firebaseConfig, "SecondaryApp" + Date.now());
+            const secondaryAuth = getAuth(secondaryApp);
+
+            const cred = await createUserWithEmailAndPassword(secondaryAuth, email, password);
+            await set(ref(db, `users/${cred.user.uid}`), {
+                name: name,
+                email: email,
+                isTeacher: false,
+                lifetimePdfAccess: false,
+                lifetimeAllCoursesAccess: false,
+                createdAt: Date.now()
+            });
+            await signOut(secondaryAuth);
+
+            showToast("Student created successfully!", "success");
+            closeTopModal();
+            document.querySelector('#modal-admin-add-student form').reset();
+        } catch(e) {
+            showToast("Error creating student: " + e.message, "error");
+        }
+        hideLoader();
+    }
+
+    function createCourseCard(course, isOwned = false) {  
+        const badge = course.type === 'free' ? '<span class="badge badge-free">Free</span>' : '<span class="badge">Paid</span>';  
+        
+        let priceText = course.type === 'free' ? 'Free' : `Rs ${course.price}`;  
+        let origPriceHtml = "";
+        let discountBadge = "";
+
+        if (course.type !== 'free' && course.originalPrice && Number(course.originalPrice) > Number(course.price)) {
+            origPriceHtml = `<span class="card-original-price">Rs ${course.originalPrice}</span>`;
+            const offPercent = Math.round(((Number(course.originalPrice) - Number(course.price)) / Number(course.originalPrice)) * 100);
+            discountBadge = `<span class="badge-discount">${offPercent}% OFF</span>`;
+        }
+
+        const actionText = isOwned ? 'Continue' : 'Details';  
+        const layoutClass = course.layout === 'full' ? 'card-full' : '';   
+        const instructor = course.instructorName || 'Mustafa Digital Academy';  
+          
+        return `  
+            <div class="card ${layoutClass}" onclick="navigateTo('screen-course-details', { courseId: '${course.id}' })">  
+                <img class="card-img" src="${course.thumbnail || 'https://i.ibb.co/6H1rC25/default-avatar.png'}" alt="Thumb">  
+                <div class="card-body">  
+                    <div>  
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">${badge} ${discountBadge}</div>  
+                        <div class="card-title">${course.title}</div>  
+                        <div class="instructor-name">By: ${instructor} <i class="fas fa-check-circle" style="color:var(--blue-tick);"></i></div>  
+                    </div>  
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">  
+                        <div>${origPriceHtml} <span class="card-price">${priceText}</span></div>  
+                        <span style="font-size:12px; color:var(--primary); font-weight:600;">${actionText}</span>  
+                    </div>  
+                </div>  
+            </div>  
+        `;  
+    }  
+      
+    function createLiveClassCard(lc) {  
+        const instructor = lc.instructorName || 'Mustafa Digital Academy';  
+        const priceText = lc.type === 'free' ? 'Free' : `Rs ${lc.price}`;  
+        const badgeClass = lc.type === 'free' ? 'badge-free' : 'badge';  
+        const badgeText = lc.type === 'free' ? 'FREE LIVE' : 'PREMIUM LIVE';  
+
+        let packageHtml = "";
+        if (lc.frequency || lc.validity) {
+            packageHtml = `<div style="font-size:11px; background:#FEF3C7; color:#92400E; padding:4px 8px; border-radius:4px; margin-bottom:8px; font-weight:600; width:max-content;"><i class="fas fa-cube"></i> Package: ${lc.frequency || ''} ${lc.frequency && lc.validity ? '|' : ''} ${lc.validity || ''}</div>`;
+        }
+
+        let daysHtml = lc.days && lc.days.length > 0 ? `<div style="font-size:11px; color:var(--primary); margin-bottom:4px; font-weight:600;"><i class="fas fa-calendar-week"></i> Days: ${lc.days.join(', ')}</div>` : "";
+
+        return `  
+            <div class="card card-full" onclick="joinLiveClass('${lc.id}')">  
+                <img class="card-img" src="${lc.thumbnail || 'https://i.ibb.co/6H1rC25/default-avatar.png'}" alt="Live">  
+                <div class="card-body">  
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">  
+                        <span class="badge ${badgeClass}">${badgeText}</span>  
+                        <span class="card-price" style="font-size:12px;">${priceText}</span>  
+                    </div>  
+                    <div class="card-title">${lc.title}</div>  
+                    <div class="instructor-name">By: ${instructor} <i class="fas fa-check-circle" style="color:var(--blue-tick);"></i></div>  
+                    ${packageHtml}
+                    ${daysHtml}
+                    <div style="font-size:12px; color:var(--text-muted); margin-bottom:8px;"><i class="far fa-calendar"></i> Date: ${lc.date} | Time: ${lc.time} - ${lc.endtime || 'End'}</div>  
+                    <button class="btn btn-danger btn-sm" style="width:100%;">Join Session</button>  
+                </div>  
+            </div>  
+        `;  
+    }  
+
+    function renderScreenData(screenId, params) {  
+        if(screenId === 'screen-home') { renderHome(); renderHomeSlider(); }  
+        else if(screenId === 'screen-explore') window.filterExplore(window.currentExploreFilter || 'all');  
+        else if(screenId === 'screen-course-details') renderCourseDetails(params.courseId, params.bannerDiscount);  
+        else if(screenId === 'screen-lesson') renderLessonView(params.courseId);  
+        else if(screenId === 'screen-community') renderCommunityFeed();  
+        else if(screenId === 'screen-books') renderBooksLibrary();  
+    }  
+
+    function renderHomeSlider() {  
+        const container = document.getElementById('home-slider-container');  
+        if(!container) return;  
+        if(sliderInterval) clearInterval(sliderInterval);  
+
+        if(allBanners.length > 0) {  
+            let slidesHtml = '';  
+            allBanners.forEach(b => {  
+                slidesHtml += `  
+                    <div class="slide-item" onclick="navigateTo('screen-course-details', {courseId: '${b.courseId || ''}', bannerDiscount: ${b.discount || 0}})">  
+                        <img src="${b.image}" alt="Banner">  
+                        <div class="overlay">${b.tag ? `<div class="hero-tag">${b.tag}</div>` : ''}</div>  
+                    </div>  
+                `;  
+            });  
+            container.innerHTML = `  
+                <div class="slider-container">  
+                    <div class="slider-track" id="slider-track">${slidesHtml}</div>  
+                </div>  
+            `;  
+            container.classList.remove('hidden');  
+
+            const track = document.getElementById('slider-track');  
+            if(track && allBanners.length > 1) {  
+                currentSlideIndex = 0;  
+                sliderInterval = setInterval(() => {  
+                    currentSlideIndex = (currentSlideIndex + 1) % allBanners.length;  
+                    track.style.transform = `translateX(-${currentSlideIndex * 100}%)`;  
+                }, 3500);  
+            }  
+        } else {  
+            container.classList.add('hidden');  
+            container.innerHTML = '';  
+        }  
+    }  
+
+    function renderHome() {  
+        const featured = document.getElementById('home-featured-courses');  
+        const searchInput = document.getElementById('home-search-input');  
+        const q = searchInput ? searchInput.value.toLowerCase() : "";  
+        let filtered = allCourses.filter(c => c.title.toLowerCase().includes(q));  
+          
+        const liveContainer = document.getElementById('home-live-classes');  
+        const liveSection = document.getElementById('live-classes-section');  
+          
+        if(allLiveClasses.length > 0) {  
+            if(liveContainer) liveContainer.innerHTML = allLiveClasses.slice(0, 2).map(lc => createLiveClassCard(lc)).join('');  
+            if(liveSection) liveSection.classList.remove('hidden');  
+        } else {  
+            if(liveSection) liveSection.classList.add('hidden');  
+        }  
+
+        if(featured) {  
+            featured.innerHTML = filtered.length > 0 ? filtered.slice(0, 6).map(c => createCourseCard(c)).join('') : '<p style="font-size:14px;color:var(--text-muted); grid-column:1/-1;">No courses match your search.</p>';  
+        }  
+    }  
+
+    window.handleGlobalSearch = function() {  
+        if(getActiveScreen() === 'screen-home') renderHome();  
+        else if(getActiveScreen() === 'screen-explore') window.filterExplore(window.currentExploreFilter || 'all');  
+    }  
+
+    window.filterExplore = function(type) {  
+        window.currentExploreFilter = type;  
+        const searchInput = document.getElementById('explore-search-input');  
+        const q = searchInput ? searchInput.value.toLowerCase() : "";  
+        const container = document.getElementById('explore-courses');  
+        if(!container) return;  
+          
+        if(type === 'live') {  
+            let filteredLive = allLiveClasses.filter(c => c.title.toLowerCase().includes(q));  
+            container.innerHTML = filteredLive.length > 0 ? filteredLive.map(lc => createLiveClassCard(lc)).join('') : '<p style="font-size:14px;color:var(--text-muted); grid-column:1/-1; text-align:center; padding:20px;"><i class="fas fa-video-slash" style="font-size:40px; margin-bottom:10px; color:#ddd;"></i><br>No live classes available right now.</p>';  
+        } else {  
+            let filtered = allCourses.filter(c => c.title.toLowerCase().includes(q));  
+            if(type !== 'all') filtered = filtered.filter(c => c.type === type);  
+            container.innerHTML = filtered.length > 0 ? filtered.map(c => createCourseCard(c)).join('') : '<p style="font-size:14px;color:var(--text-muted); grid-column:1/-1; text-align:center;">No courses found.</p>';  
+        }  
+    };  
+
+    function renderBooksLibrary() {  
+        const list = document.getElementById('books-list');  
+        if(!list) return;  
+        if(allPdfBooks.length === 0) { list.innerHTML = '<p style="grid-column:1/-1; text-align:center; color:var(--text-muted);">No books available yet.</p>'; return; }  
+          
+        let htmlString = "";  
+        allPdfBooks.forEach(b => {  
+            const badge = b.type === 'free' ? '<span class="badge badge-free">Free PDF</span>' : '<span class="badge badge-pdf">Premium PDF</span>';  
+            const priceText = b.type === 'free' ? 'Free' : `Rs ${b.price}`;  
+            const hasAccess = window.hasLifetimePdfAccess || (window.pdfAccessList && window.pdfAccessList[b.id]) || window.isAdmin;  
+            const actionText = (b.type === 'free' || hasAccess) ? 'Read' : 'Unlock';  
+              
+            htmlString += `  
+                <div class="card">  
+                    <img class="card-img card-img-pdf" src="${b.thumbnail || 'https://i.ibb.co/6H1rC25/default-avatar.png'}" alt="Cover" onclick="openPdfBook('${b.id}')">  
+                    <div class="card-body">  
+                        <div onclick="openPdfBook('${b.id}')" style="cursor:pointer;">  
+                            <div style="margin-bottom:6px;">${badge}</div>  
+                            <div class="card-title">${b.title}</div>  
+                        </div>  
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">  
+                            <span class="card-price">${priceText}</span>  
+                            <div style="display:flex; gap:6px;">  
+                                <button class="btn btn-primary btn-sm" onclick="openPdfBook('${b.id}')">${actionText}</button>  
+                                ${(b.type === 'free' || hasAccess) ? `<a href="${convertGDriveDownloadLink(b.url)}" target="_blank" class="btn btn-outline btn-sm" title="Download PDF"><i class="fas fa-download"></i></a>` : ''}  
+                            </div>  
+                        </div>  
+                    </div>  
+                </div>  
+            `;  
+        });  
+        list.innerHTML = htmlString;  
+    }  
+
+    window.openPdfBook = function(bookId) {  
+        if(!window.currentUser) { showToast("Login to read books", "warning"); navigateTo('screen-login'); return; }  
+        const book = allPdfBooks.find(b => b.id === bookId);  
+        if(!book) return;  
+
+        if(book.type === 'paid') {  
+            const hasAccess = window.isAdmin || window.hasLifetimePdfAccess || (window.pdfAccessList && window.pdfAccessList[bookId]);  
+            if(!hasAccess) {  
+                window.activeItemContext = { id: book.id, title: book.title, price: book.price, type: 'pdf', instructorId: 'admin' };  
+                openCheckoutModalDynamic(window.activeItemContext);  
+                return;  
+            }  
+        }  
+        playFullscreenVideo(book.url);   
+    }  
+
+    window.buyLifetimePdfPackage = function() {  
+        if(!window.currentUser) { showToast("Login first", "warning"); navigateTo('screen-login'); return; }  
+        if(window.hasLifetimePdfAccess) { showToast("You already have Lifetime Access!", "info"); return; }  
+        window.activeItemContext = { id: 'LIFETIME_PDF', title: 'Lifetime PDF Package', price: pdfPackagePrice, type: 'package', instructorId: 'admin' };  
+        openCheckoutModalDynamic(window.activeItemContext);  
+    }  
+
+    window.buyAllCoursesPackage = function() {
+        if(!window.currentUser) { showToast("Login first", "warning"); navigateTo('screen-login'); return; }  
+        if(window.hasLifetimeAllCoursesAccess) { showToast("You already have Lifetime All-Courses Access!", "info"); return; }  
+        window.activeItemContext = { id: 'LIFETIME_ALL_COURSES', title: 'Lifetime All Courses VIP Package', price: allCoursesPackagePrice, type: 'all_courses_package', instructorId: 'admin' };  
+        openCheckoutModalDynamic(window.activeItemContext); 
+    }
+
+    function renderProfileView(userData) {  
+        const profileDiv = document.getElementById('profile-content');  
+        if(!profileDiv) return;  
+        if(window.currentUser) {  
+            const userAvatar = (userData && userData.avatar) || window.currentUser.photoURL || 'https://i.ibb.co/6H1rC25/default-avatar.png';  
+            const isVerifiedTeacher = userData && userData.isTeacher === true;  
+            const verificationStatus = userData && userData.verificationStatus;  
+
+            let teacherActionHtml = "";  
+            if (isVerifiedTeacher) {  
+                teacherActionHtml = `<button class="btn btn-secondary" style="width:100%; padding:14px; margin-bottom:16px;" onclick="navigateTo('screen-teacher')"><i class="fas fa-chalkboard-teacher"></i> Teacher Panel</button>`;  
+            } else if (verificationStatus === 'pending') {  
+                teacherActionHtml = `<div style="background:#FEF3C7; color:#92400E; padding:10px; border-radius:8px; margin-bottom:16px; font-size:13px;">Instructor Verification Pending with Admin...</div>`;  
+            } else {  
+                teacherActionHtml = `<button class="btn btn-outline" style="width:100%; padding:14px; margin-bottom:16px; border-color:var(--primary); color:var(--primary);" onclick="openTeacherVerificationModal()"><i class="fas fa-id-card"></i> Apply as Instructor / Teacher</button>`;  
+            }  
+
+            profileDiv.innerHTML = `  
+                <div style="text-align:center; padding: 20px 0; position:relative;">  
+                    <img src="${userAvatar}" style="width:80px; height:80px; border-radius:50%; object-fit:cover; margin-bottom:10px;">  
+                    <h2>${(userData && userData.name) || window.currentUser.displayName || 'Student'} ${isVerifiedTeacher ? '<i class="fas fa-check-circle" style="color:var(--blue-tick);"></i>' : ''}</h2>  
+                    <p style="color:var(--text-muted); font-size:14px; margin-bottom:8px;">${window.currentUser.email}</p>  
+                    <div style="display:flex; justify-content:center; gap:6px; flex-wrap:wrap; margin-bottom:16px;">
+                        ${window.hasLifetimePdfAccess ? `<span class="badge badge-pdf"><i class="fas fa-crown"></i> Lifetime PDF Member</span>` : ''}  
+                        ${window.hasLifetimeAllCoursesAccess ? `<span class="badge" style="background:#DD2476;"><i class="fas fa-crown"></i> All-Courses VIP Member</span>` : ''}  
+                    </div>
+                    <button class="btn btn-outline" style="margin-bottom: 10px;" onclick="openEditProfileModal()"><i class="fas fa-edit"></i> Edit Profile</button>  
+                </div>  
+                  
+                ${window.isAdmin ? `<button class="btn btn-primary" style="width:100%; padding:14px; margin-bottom:16px; background:#4F46E5;" onclick="navigateTo('screen-admin')"><i class="fas fa-shield-alt"></i> Open Admin Panel</button>` : ''}  
+                ${teacherActionHtml}  
+                  
+                <hr style="border:0; border-top:1px solid var(--border-color); margin: 16px 0;">  
+                <button class="btn btn-danger" style="width:100%; padding:14px;" onclick="handleLogout()">Logout</button>  
+            `;  
+        } else {  
+            profileDiv.innerHTML = `  
+                <div style="text-align:center; padding: 40px 10px;">  
+                    <i class="fas fa-user-circle" style="font-size: 60px; color: var(--border-color); margin-bottom: 16px;"></i>  
+                    <h2>You are not logged in</h2>  
+                    <p style="color:var(--text-muted); font-size:14px; margin: 16px 0;">Login or create an account to enroll in courses.</p>  
+                    <button class="btn btn-primary" style="width:100%; padding:14px;" onclick="navigateTo('screen-login')">Login / Register</button>  
+                </div>  
+            `;  
+        }  
+    }  
+
+    window.openEditProfileModal = function() {  
+        if(!window.currentUser) return;  
+        const epName = document.getElementById('ep-name');  
+        if(epName) epName.value = window.currentUser.displayName || "";  
+        openModal('modal-edit-profile');  
+    }  
+
+    window.submitEditProfile = async function() {  
+        if(!window.currentUser) return;  
+        showLoader();  
+        try {  
+            const epName = document.getElementById('ep-name');  
+            const newName = epName ? epName.value.trim() : "";  
+              
+            const userSnap = await get(ref(db, `users/${window.currentUser.uid}`));  
+            const userData = userSnap.exists() ? userSnap.val() : {};  
+              
+            let avatarUrl = null;  
+            const fileInput = document.getElementById('ep-avatar');  
+            if(fileInput && fileInput.files.length > 0) {   
+                if(!window.isAdmin) {  
+                    const lastUpdate = userData.lastAvatarUpdate || 0;  
+                    const thirtyDays = 30 * 24 * 60 * 60 * 1000;  
+                    if(Date.now() - lastUpdate < thirtyDays) {  
+                        showToast("Aap mahine mein sirf ek baar profile picture change kar sakte hain.", "error");  
+                        hideLoader();  
+                        return;  
+                    }  
+                }  
+                avatarUrl = await window.uploadToImgBB('ep-avatar');   
+            }  
+              
+            await updateProfile(window.currentUser, { displayName: newName });  
+            const updates = { name: newName };  
+            if(avatarUrl) {  
+                updates.avatar = avatarUrl;  
+                updates.lastAvatarUpdate = Date.now();  
+            }  
+            await update(ref(db, `users/${window.currentUser.uid}`), updates);  
+            showToast("Profile updated!", "success");  
+            closeTopModal();  
+            if(fileInput) fileInput.value = '';  
+        } catch(e) { showToast("Error updating profile", "error"); }  
+        hideLoader();  
+    }  
+
+    window.openTeacherVerificationModal = function() {  
+        openModal('modal-teacher-verification');  
+    }  
+
+    window.submitTeacherVerification = async function() {  
+        if(!window.currentUser) return;  
+        showLoader();  
+        try {  
+            const name = document.getElementById('tv-name').value.trim();  
+            const fname = document.getElementById('tv-fname').value.trim();  
+            const whatsapp = document.getElementById('tv-whatsapp').value.trim();  
+
+            await set(ref(db, `teacher_requests/${window.currentUser.uid}`), {  
+                uid: window.currentUser.uid,  
+                name, fname, whatsapp,  
+                email: window.currentUser.email,  
+                status: 'pending',  
+                timestamp: Date.now()  
+            });  
+            await update(ref(db, `users/${window.currentUser.uid}`), { verificationStatus: 'pending' });  
+
+            showToast("Verification request submitted successfully!", "success");  
+            closeTopModal();  
+        } catch(e) { showToast("Error submitting request", "error"); }  
+        hideLoader();  
+    }  
+
+    window.openAdminTeacherBanksModal = function() {  
+        if(!window.isAdmin) return;  
+        populateAdminTeacherDropdown();  
+        openModal('modal-admin-teacher-banks');  
+    }  
+
+    function populateAdminTeacherDropdown() {  
+        const sel = document.getElementById('atb-teacher-select');  
+        if(!sel) return;  
+        let html = '<option value="">Select Teacher</option>';  
+        for(let uid in window.allUsersList) {  
+            const u = window.allUsersList[uid];  
+            if(u.isTeacher === true) {  
+                html += `<option value="${uid}">${u.name} (${u.email})</option>`;  
+            }  
+        }  
+        sel.innerHTML = html;  
+    }  
+
+    window.loadSelectedTeacherBank = async function() {  
+        const sel = document.getElementById('atb-teacher-select');  
+        const tUid = sel ? sel.value : "";  
+        if(!tUid) return;  
+        const snap = await get(ref(db, `teacher_bank_accounts/${tUid}`));  
+        if(snap.exists()) {  
+            const acc = snap.val();  
+            document.getElementById('atb-bank').value = acc.bankName || "";  
+            document.getElementById('atb-holder').value = acc.holderName || "";  
+            document.getElementById('atb-number').value = acc.accountNumber || "";  
+        } else {  
+            document.getElementById('atb-bank').value = "";  
+            document.getElementById('atb-holder').value = "";  
+            document.getElementById('atb-number').value = "";  
+        }  
+    }  
+
+    window.saveTeacherBankByAdmin = async function() {  
+        if(!window.isAdmin) return;  
+        const sel = document.getElementById('atb-teacher-select');  
+        const tUid = sel ? sel.value : "";  
+        if(!tUid) { showToast("Please select a teacher", "warning"); return; }  
+
+        showLoader();  
+        try {  
+            const bankName = document.getElementById('atb-bank').value.trim();  
+            const holderName = document.getElementById('atb-holder').value.trim();  
+            const accountNumber = document.getElementById('atb-number').value.trim();  
+
+            await set(ref(db, `teacher_bank_accounts/${tUid}`), {  
+                bankName, holderName, accountNumber, updatedAt: Date.now()  
+            });  
+            showToast("Teacher bank account saved by Admin!", "success");  
+            closeTopModal();  
+        } catch(e) { showToast("Error saving bank info", "error"); }  
+        hideLoader();  
+    }  
+
+    window.requestTeacherWithdrawal = async function() {  
+        if(!window.currentUser || !window.isTeacher) return;  
+        showLoader();  
+        try {  
+            const wSnap = await get(ref(db, `teacher_wallets/${window.currentUser.uid}`));  
+            const balance = wSnap.exists() ? (wSnap.val().balance || 0) : 0;  
+            if(balance <= 0) { showToast("Your wallet balance is Rs 0", "warning"); hideLoader(); return; }  
+
+            const bSnap = await get(ref(db, `teacher_bank_accounts/${window.currentUser.uid}`));  
+            if(!bSnap.exists()) { showToast("Admin has not added your bank account yet. Contact Admin.", "error"); hideLoader(); return; }  
+            const bankInfo = bSnap.val();  
+
+            await set(push(ref(db, 'withdrawal_requests')), {  
+                teacherUid: window.currentUser.uid,  
+                teacherName: window.currentUser.displayName || "Teacher",  
+                amount: balance,  
+                bankName: bankInfo.bankName,  
+                holderName: bankInfo.holderName,  
+                accountNumber: bankInfo.accountNumber,  
+                status: 'pending',  
+                timestamp: Date.now()  
+            });  
+
+            showToast("Withdrawal request submitted to Admin successfully!", "success");  
+        } catch(e) { showToast("Error requesting withdrawal", "error"); }  
+        hideLoader();  
+    }  
+
+    window.openAdminWithdrawalsModal = function() {  
+        if(!window.isAdmin) return;  
+        openModal('modal-admin-withdrawals');  
+    }  
+
+    window.approveWithdrawal = async function(reqId, teacherUid, amount) {  
+        showLoader();  
+        try {  
+            const wRef = ref(db, `teacher_wallets/${teacherUid}/balance`);  
+            const snap = await get(wRef);  
+            let currentBal = snap.exists() ? snap.val() : 0;  
+            let newBal = Math.max(0, currentBal - amount);  
+            await set(wRef, newBal);  
+
+            await update(ref(db, `withdrawal_requests/${reqId}`), { status: 'approved', resolvedAt: Date.now() });  
+            showToast("Withdrawal marked as Paid & Completed!", "success");  
+        } catch(e) { showToast("Error", "error"); }  
+        hideLoader();  
+    }  
+
+    window.rejectWithdrawal = async function(reqId) {  
+        showLoader();  
+        try {  
+            await update(ref(db, `withdrawal_requests/${reqId}`), { status: 'rejected' });  
+            showToast("Withdrawal rejected", "info");  
+        } catch(e) {}  
+        hideLoader();  
+    }  
+
+    window.openAdminApprovedHistoryModal = async function() {  
+        if(!window.isAdmin) return;  
+        showLoader();  
+        const list = document.getElementById('admin-approved-history-list');  
+        const snap = await get(ref(db, 'payment_requests'));  
+        list.innerHTML = '';  
+        if(snap.exists()) {  
+            let html = "";  
+            snap.forEach(child => {  
+                const req = child.val();  
+                if(req.status === 'approved') {  
+                    let teacherObj = window.allUsersList[req.instructorId];  
+                    let teacherName = teacherObj ? teacherObj.name : (req.instructorId === 'admin' ? 'Admin / Platform' : 'Assigned Teacher');  
+                    html += `  
+                        <div class="list-row" style="flex-direction:column; align-items:flex-start; gap:4px;">  
+                            <div><strong>Student Email:</strong> ${req.email}</div>  
+                            <div><strong>Item:</strong> ${req.itemName} (${req.itemType?.toUpperCase()})</div>  
+                            <div><strong>Amount Paid:</strong> Rs ${req.amount}</div>  
+                            <div><strong>Teacher / Instructor:</strong> ${teacherName}</div>  
+                            <div><strong>Date:</strong> ${new Date(req.resolvedAt || req.timestamp).toLocaleString()}</div>  
+                        </div>  
+                    `;  
+                }  
+            });  
+            list.innerHTML = html || '<p style="padding:16px; text-align:center;">No approved payments found.</p>';  
+        } else {  
+            list.innerHTML = '<p style="padding:16px; text-align:center;">No payment records found.</p>';  
+        }  
+        hideLoader();  
+        openModal('modal-admin-approved-history');  
+    }  
+
+    window.openAdminTeachersEarningsModal = function() {  
+        if(!window.isAdmin) return;  
+        const list = document.getElementById('admin-teachers-earnings-list');  
+        let html = "";  
+        let count = 0;  
+
+        for(let uid in window.allUsersList) {  
+            const u = window.allUsersList[uid];  
+            if(u.isTeacher === true) {  
+                count++;  
+                let walletBal = window.teacherWallets[uid] ? (window.teacherWallets[uid].balance || 0) : 0;  
+                let tCourses = allCourses.filter(c => c.instructorId === uid).length;  
+                let tLive = allLiveClasses.filter(c => c.instructorId === uid).length;  
+
+                html += `  
+                    <div class="card card-body" style="margin:12px; background:#F9FAFB;">  
+                        <h3 style="font-size:16px; color:var(--primary);">${u.name} <i class="fas fa-check-circle" style="color:var(--blue-tick);"></i></h3>  
+                        <p style="font-size:13px; color:var(--text-muted); margin-bottom:8px;">${u.email}</p>  
+                        <div style="display:flex; gap:12px; margin-bottom:8px; font-size:13px;">  
+                            <div><strong>Courses:</strong> ${tCourses}</div>  
+                            <div><strong>Live Classes:</strong> ${tLive}</div>  
+                        </div>  
+                        <div style="font-weight:700; color:var(--secondary); font-size:15px; margin-bottom:8px;">Wallet Balance: Rs ${walletBal}</div>  
+                    </div>  
+                `;  
+            }  
+        }  
+        list.innerHTML = html || '<p style="padding:16px; text-align:center;">No verified teachers found.</p>';  
+        openModal('modal-admin-teachers-earnings');  
+    }  
+
+    window.openAdminStudentsActivityModal = async function() {  
+        if(!window.isAdmin) return;  
+        showLoader();  
+        const list = document.getElementById('admin-students-activity-list');  
+        let html = "";  
+
+        for(let uid in window.allUsersList) {  
+            const u = window.allUsersList[uid];  
+            if(!u.isTeacher && u.email !== ADMIN_EMAIL) {  
+                const cAccessSnap = await get(ref(db, `course_access/${uid}`));  
+                let enrolledCount = cAccessSnap.exists() ? Object.keys(cAccessSnap.val()).length : 0;  
+
+                html += `  
+                    <div class="list-row" style="flex-direction:column; align-items:flex-start; gap:4px;">  
+                        <div><strong>Student Name:</strong> ${u.name || 'Student'}</div>  
+                        <div><strong>Email:</strong> ${u.email}</div>  
+                        <div><strong>Enrolled Courses Count:</strong> ${enrolledCount}</div>  
+                        <div><strong>Account Created:</strong> ${u.createdAt ? new Date(u.createdAt).toLocaleDateString() : 'N/A'}</div>  
+                    </div>  
+                `;  
+            }  
+        }  
+        list.innerHTML = html || '<p style="padding:16px; text-align:center;">No students found.</p>';  
+        hideLoader();  
+        openModal('modal-admin-students-activity');  
+    }  
+
+    window.openAdminTeacherRequestsModal = async function() {  
+        if(!window.isAdmin) return;  
+        showLoader();  
+        const list = document.getElementById('admin-teacher-requests-list');  
+        const snap = await get(ref(db, 'teacher_requests'));  
+        list.innerHTML = '';  
+        if(snap.exists()) {  
+            let html = "";  
+            snap.forEach(child => {  
+                const req = { id: child.key, ...child.val() };  
+                if(req.status === 'pending') {  
+                    html += `  
+                        <div class="list-row" style="flex-direction:column; align-items:flex-start; gap:6px;">  
+                            <div><strong>Name:</strong> ${req.name} (S/O ${req.fname})</div>  
+                            <div><strong>Email:</strong> ${req.email}</div>  
+                            <div><strong>WhatsApp:</strong> ${req.whatsapp}</div>  
+                            <div style="display:flex; gap:8px; width:100%; margin-top:6px;">  
+                                <button class="btn btn-secondary btn-sm" style="flex:1;" onclick="approveTeacher('${req.id}')">Approve Teacher</button>  
+                                <button class="btn btn-danger btn-sm" style="flex:1;" onclick="rejectTeacher('${req.id}')">Reject</button>  
+                            </div>  
+                        </div>  
+                    `;  
+                }  
+            });  
+            list.innerHTML = html || '<p style="padding:16px; text-align:center;">No pending requests.</p>';  
+        } else {  
+            list.innerHTML = '<p style="padding:16px; text-align:center;">No pending requests.</p>';  
+        }  
+        hideLoader();  
+        openModal('modal-admin-teacher-requests');  
+    }  
+
+    window.approveTeacher = async function(uid) {  
+        showLoader();  
+        try {  
+            await update(ref(db, `users/${uid}`), { isTeacher: true, verificationStatus: 'approved' });  
+            await update(ref(db, `teacher_requests/${uid}`), { status: 'approved' });  
+            showToast("Teacher approved successfully!", "success");  
+            closeTopModal();  
+        } catch(e) { showToast("Error", "error"); }  
+        hideLoader();  
+    }  
+
+    window.rejectTeacher = async function(uid) {  
+        showLoader();  
+        try {  
+            await update(ref(db, `users/${uid}`), { verificationStatus: 'rejected' });  
+            await update(ref(db, `teacher_requests/${uid}`), { status: 'rejected' });  
+            showToast("Request rejected", "info");  
+            closeTopModal();  
+        } catch(e) {}  
+        hideLoader();  
+    }  
+
+    window.renderCommunityFeed = function() {  
+        const feed = document.getElementById('community-feed');  
+        const loader = document.getElementById('community-loader');  
+        if(!feed) return;  
+        if(allCommunityPosts.length === 0) {   
+            feed.innerHTML = '<p style="text-align:center;color:var(--text-muted);">No posts yet.</p>';   
+            if(loader) loader.style.display = 'none';   
+            return;   
+        }  
+          
+        let htmlString = "";  
+        allCommunityPosts.slice(0, visibleCommunityLimit).forEach(p => {  
+            const totalLikes = (Number(p.fakeLikes) || 0) + (p.likes ? Object.keys(p.likes).length : 0);  
+            const hasLiked = window.currentUser && p.likes && p.likes[window.currentUser.uid];  
+            const hasSaved = window.currentUser && window.userSavedPosts && window.userSavedPosts[p.id];  
+              
+            htmlString += `  
+                <div class="card card-body" style="margin-bottom:16px; box-shadow:0 1px 4px rgba(0,0,0,0.08);">  
+                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">  
+                        <div style="width:36px; height:36px; border-radius:50%; background:var(--primary); color:white; display:flex; justify-content:center; align-items:center; font-weight:bold;">${p.authorName ? p.authorName.charAt(0).toUpperCase() : 'U'}</div>  
+                        <div>  
+                            <div style="font-weight:600; font-size:14px;">${p.authorName}</div>  
+                            <div style="font-size:11px; color:var(--text-muted);">${new Date(p.timestamp).toLocaleString()}</div>  
+                        </div>  
+                    </div>  
+                    <p style="font-size:14px; margin-bottom:10px; line-height:1.5;">${p.text}</p>  
+                    ${p.imageUrl ? `<img src="${p.imageUrl}" style="width:100%; border-radius:8px; margin-bottom:10px;">` : ''}  
+                    <div style="display:flex; justify-content:space-between; border-top:1px solid var(--border-color); padding-top:8px; margin-top:8px;">  
+                        <div class="post-action ${hasLiked ? 'liked' : ''}" onclick="toggleLike('${p.id}')"><i class="${hasLiked ? 'fas' : 'far'} fa-heart"></i> <span>${totalLikes > 0 ? totalLikes : 'Like'}</span></div>  
+                        <div class="post-action ${hasSaved ? 'saved' : ''}" onclick="toggleSave('${p.id}')"><i class="${hasSaved ? 'fas' : 'far'} fa-bookmark"></i> <span>${hasSaved ? 'Saved' : 'Save'}</span></div>  
+                    </div>  
+                </div>  
+            `;  
+        });  
+        feed.innerHTML = htmlString;  
+        if(loader) loader.style.display = (visibleCommunityLimit >= allCommunityPosts.length) ? 'none' : 'block';  
+    }  
+
+    window.toggleLike = async function(postId) {  
+        if(!window.currentUser) { showToast("Login to like", "warning"); return; }  
+        const post = allCommunityPosts.find(p => p.id === postId);  
+        if(post && post.likes && post.likes[window.currentUser.uid]) await remove(ref(db, `community/${postId}/likes/${window.currentUser.uid}`));  
+        else await set(ref(db, `community/${postId}/likes/${window.currentUser.uid}`), true);  
+    }  
+      
+    window.toggleSave = async function(postId) {  
+        if(!window.currentUser) { showToast("Login to save", "warning"); return; }  
+        if(window.userSavedPosts && window.userSavedPosts[postId]) await remove(ref(db, `users/${window.currentUser.uid}/saved/${postId}`));  
+        else await set(ref(db, `users/${window.currentUser.uid}/saved/${postId}`), true);  
+    }  
+
+    window.openCommunityPostModal = function() {  
+        if(!window.currentUser) { showToast("Login to post", "warning"); navigateTo('screen-login'); return; }  
+        openModal('modal-add-post');  
+    }  
+
+    window.checkWordLimit = function(textarea) {  
+        const words = textarea.value.trim().split(/\s+/).filter(Boolean);  
+        const hint = document.getElementById('word-count-hint');  
+        if(words.length > 300) {  
+            textarea.value = words.slice(0, 300).join(" ");  
+            hint.innerText = "300 / 300 words (Limit reached)";  
+            hint.style.color = "var(--danger)";  
+        } else {  
+            hint.innerText = `${words.length} / 300 words`;  
+            hint.style.color = "var(--text-muted)";  
+        }  
+    }  
+      
+    window.submitCommunityPost = async function() {  
+        if(!window.currentUser) return;  
+        const textEl = document.getElementById('cp-text');  
+        const text = textEl ? textEl.value.trim() : "";  
+        if(!text) { showToast("Please write something", "warning"); return; }  
+          
+        showLoader();  
+        try {  
+            let imgUrl = await window.uploadToImgBB('cp-image');  
+            let fakeLikes = 0;  
+            const flEl = document.getElementById('cp-fakelikes');  
+            if(window.isAdmin && flEl) fakeLikes = parseInt(flEl.value) || 0;  
+              
+            await set(push(ref(db, 'community')), {   
+                uid: window.currentUser.uid,   
+                authorName: window.currentUser.displayName || window.currentUser.email.split('@')[0],   
+                text: text,   
+                imageUrl: imgUrl || null,   
+                timestamp: Date.now(),   
+                fakeLikes: fakeLikes   
+            });  
+              
+            showToast("Posted successfully!", "success");  
+            closeTopModal();  
+            if(textEl) textEl.value = '';   
+            const imgEl = document.getElementById('cp-image');  
+            if(imgEl) imgEl.value = '';   
+            if(flEl) flEl.value = '0';  
+        } catch(e) {  
+            showToast("Error posting", "error");  
+        }  
+        hideLoader();  
+    };  
+
+    async function renderCourseDetails(courseId, bannerDiscount = 0) {  
+        const container = document.getElementById('course-details-content');  
+        if(!container) return;  
+        container.innerHTML = '<div class="spinner" style="margin:20px auto;"></div>';  
+          
+        const course = allCourses.find(c => c.id === courseId);  
+        if(!course) { container.innerHTML = '<p>Course not found.</p>'; return; }  
+
+        let isOwned = false;  
+        if (window.currentUser) {  
+            try {  
+                const accessSnap = await get(ref(db, `course_access/${window.currentUser.uid}/${courseId}`));  
+                isOwned = window.hasLifetimeAllCoursesAccess || (accessSnap.exists() && accessSnap.val().status === 'active');  
+            } catch(e) {}  
+        }  
+
+        let finalPrice = Number(course.price);
+        let discountMsg = "";
+
+        if (bannerDiscount > 0 && course.type !== 'free') {
+            const calculatedPrice = Math.round(finalPrice - (finalPrice * (bannerDiscount / 100)));
+            finalPrice = calculatedPrice;
+            discountMsg = `<div style="background:#FEE2E2; color:#991B1B; padding:8px; border-radius:6px; font-size:12px; margin-bottom:12px; font-weight:bold;"><i class="fas fa-tag"></i> Special Banner Offer: ${bannerDiscount}% Additional Discount Applied!</div>`;
+        }
+
+        let actionHtml = '';  
+        if (isOwned || window.isAdmin || (window.isTeacher && course.instructorId === window.currentUser.uid)) {  
+            actionHtml = `<button class="btn btn-secondary" style="width:100%; padding:14px;" onclick="navigateTo('screen-lesson', { courseId: '${course.id}' })">Open Course Lessons</button>`;  
+        } else if(course.type === 'free') {  
+            actionHtml = `<button class="btn btn-primary" style="width:100%; padding:14px;" onclick="enrollFreeCourse('${course.id}')">Enroll for Free</button>`;  
+        } else {  
+            actionHtml = `<button class="btn btn-primary" style="width:100%; padding:14px;" onclick="openCheckoutModalCourse('${course.id}', ${finalPrice})">Enroll Now - Rs ${finalPrice}</button>`;  
+        }  
+
+        const instructor = course.instructorName || 'Mustafa Digital Academy';  
+
+        let priceDisplay = course.type==='free'?'Free': 'Rs '+finalPrice;
+        if(course.type !== 'free' && course.originalPrice && Number(course.originalPrice) > finalPrice) {
+            priceDisplay = `<span style="text-decoration:line-through; color:var(--text-muted); font-size:14px; margin-right:8px;">Rs ${course.originalPrice}</span> <span style="color:var(--primary); font-weight:bold;">Rs ${finalPrice}</span>`;
+        }
+
+        container.innerHTML = `  
+            <img src="${course.thumbnail || 'https://i.ibb.co/6H1rC25/default-avatar.png'}" style="width:100%; height:200px; object-fit:cover; border-radius:12px; margin-bottom:16px;">  
+            <div style="margin-bottom:8px;">${course.type === 'free' ? '<span class="badge badge-free">Free Course</span>' : '<span class="badge">Paid Course</span>'}</div>  
+            <h2 style="margin-bottom:4px;">${course.title}</h2>  
+            <div class="instructor-name">Instructor: ${instructor} <i class="fas fa-check-circle" style="color:var(--blue-tick);"></i></div>  
+            ${discountMsg}
+            <p style="font-weight:700; margin-bottom: 16px; font-size:18px;">${priceDisplay}</p>  
+            <div style="margin-bottom:24px; line-height:1.6; font-size:14px; color:var(--text-muted);">${course.description}</div>  
+            ${actionHtml}  
+        `;  
+    }  
+
+    window.renderLessonView = async function(courseId) {  
+        if(!window.currentUser) { goBack(); return; }  
+        const course = allCourses.find(c => c.id === courseId);  
+        const titleEl = document.getElementById('lesson-course-title');  
+        if(titleEl) titleEl.innerText = course ? course.title : 'Lessons';  
+          
+        const listContainer = document.getElementById('lesson-list-content');  
+        if(!listContainer) return;  
+        listContainer.innerHTML = '<div class="spinner" style="margin:20px auto;"></div>';  
+
+        try {  
+            const snap = await get(ref(db, `lessons/${courseId}`));  
+            listContainer.innerHTML = '';  
+            if(!snap.exists()){ listContainer.innerHTML = '<p style="color:var(--text-muted);">No lessons yet.</p>'; return; }  
+              
+            let htmlString = "";  
+            snap.forEach(child => {  
+                const l = child.val();  
+                htmlString += `<div class="lesson-item" onclick="playFullscreenVideo('${l.url}')"><div style="font-weight:500;"><i class="fas fa-play-circle" style="color:var(--primary); margin-right:8px;"></i> ${l.title}</div></div>`;  
+            });  
+            listContainer.innerHTML = htmlString;  
+        } catch(e) { listContainer.innerHTML = '<p style="color:var(--danger);">Error loading.</p>'; }  
+    };  
+
+    function convertVideoLink(url) {  
+        if (!url) return "";  
+        let ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/))([a-zA-Z0-9_-]{11})/);  
+        if (ytMatch && ytMatch[1]) {  
+            return `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1`;  
+        }  
+        let driveMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || url.match(/\?id=([a-zA-Z0-9_-]+)/);  
+        if (driveMatch && driveMatch[1]) {  
+            return `https://drive.google.com/file/d/${driveMatch[1]}/preview`;  
+        }  
+        return url;  
+    }  
+
+    function convertGDriveDownloadLink(url) {  
+        if (!url) return "";  
+        let match = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || url.match(/\?id=([a-zA-Z0-9_-]+)/);  
+        if (match && match[1]) {  
+            return `https://drive.google.com/uc?export=download&id=${match[1]}`;  
+        }  
+        return url;  
+    }  
+
+    window.playFullscreenVideo = function(url) {  
+        const overlay = document.getElementById('fullscreen-video-overlay');  
+        const player = document.getElementById('fs-video-player');  
+        if(!overlay || !player) return;  
+          
+        player.src = convertVideoLink(url);  
+        overlay.classList.remove('hidden');  
+        history.pushState({ fullscreen: true }, "");  
+
+        try {  
+            if (overlay.requestFullscreen) { let p = overlay.requestFullscreen(); if(p) p.catch(()=>{}); }   
+            else if (overlay.webkitRequestFullscreen) { let p = overlay.webkitRequestFullscreen(); if(p) p.catch(()=>{}); }  
+        } catch (err) {}  
+        try { if (screen.orientation && screen.orientation.lock) { screen.orientation.lock("landscape").catch(()=>{}); } } catch (err) {}  
+    };  
+
+    window.closeFullscreenVideo = function() {  
+        const overlay = document.getElementById('fullscreen-video-overlay');  
+        const player = document.getElementById('fs-video-player');  
+        if(player) player.src = "";   
+        if(overlay) overlay.classList.add('hidden');  
+        try { if (document.exitFullscreen && document.fullscreenElement) { let p = document.exitFullscreen(); if(p) p.catch(()=>{}); } } catch(e) {}  
+        try { if (screen.orientation && screen.orientation.unlock) { screen.orientation.unlock(); } } catch(e) {}  
+    };  
+
+    window.joinLiveClass = function(classId) {  
+        if(!window.currentUser) { showToast("Login to join", "warning"); navigateTo('screen-login'); return; }  
+        const lc = allLiveClasses.find(c => c.id === classId);  
+        if(!lc) return;  
+
+        const now = new Date();  
+        const classDate = lc.date;  
+        const startTimeStr = `${classDate}T${lc.time}:00`;  
+        const endTimeStr = `${classDate}T${lc.endtime || lc.time}:00`;  
+
+        const startTimeMs = new Date(startTimeStr).getTime();  
+        const endTimeMs = new Date(endTimeStr).getTime();  
+        const nowMs = now.getTime();  
+
+        if (!isNaN(startTimeMs) && !isNaN(endTimeMs)) {  
+            if (nowMs < startTimeMs) {  
+                showToast(`Class is scheduled to start at ${lc.time} on ${lc.date}`, "warning");  
+                return;  
+            }  
+            if (nowMs > endTimeMs) {  
+                showToast(`This live class session has ended (Time was ${lc.time} - ${lc.endtime})`, "error");  
+                return;  
+            }  
+        }  
+
+        if(lc.type === 'paid') {  
+            const userAccess = window.liveAccessList ? window.liveAccessList[classId] : null;
+            const hasAccess = window.isAdmin || (lc.instructorId === window.currentUser.uid) || (userAccess && userAccess.status === 'active');  
+            
+            if (userAccess && userAccess.expiresAt && userAccess.expiresAt > 0) {
+                if (Date.now() > userAccess.expiresAt && !window.isAdmin) {
+                    showToast("Aapka live class package expire ho chuka hai. Baraye meharbani renewal ke liye dubara payment karein.", "error");
+                    window.activeItemContext = { id: lc.id, title: lc.title, price: lc.price, type: 'live', instructorId: lc.instructorId };  
+                    openCheckoutModalDynamic(window.activeItemContext);  
+                    return;
+                }
+            }
+
+            if(!hasAccess) {  
+                window.activeItemContext = { id: lc.id, title: lc.title, price: lc.price, type: 'live', instructorId: lc.instructorId };  
+                openCheckoutModalDynamic(window.activeItemContext);  
+                return;  
+            }  
+        }  
+        window.open(lc.link, '_blank');  
+    }  
+
+    window.enrollFreeCourse = async function(courseId) {  
+        if(!window.currentUser) { showToast("Login first", "warning"); navigateTo('screen-login'); return; }  
+        showLoader();  
+        try {  
+            await set(ref(db, `course_access/${window.currentUser.uid}/${courseId}`), { courseId: courseId, accessType: 'lifetime', status: 'active', grantedAt: Date.now() });  
+            showToast("Successfully enrolled!", "success");  
+            renderCourseDetails(courseId);   
+        } catch(e) { showToast("Failed", "error"); }  
+        hideLoader();  
+    };  
+
+    window.openCheckoutModalCourse = function(courseId, customPrice = null) {  
+        const course = allCourses.find(c => c.id === courseId);  
+        if(!course) return;  
+        const priceToUse = customPrice !== null ? customPrice : course.price;
+        window.activeItemContext = { id: course.id, title: course.title, price: priceToUse, type: 'course', instructorId: course.instructorId };  
+        openCheckoutModalDynamic(window.activeItemContext);  
+    }  
+
+    window.openCheckoutModalDynamic = function(itemContext) {  
+        if(!window.currentUser) { showToast("Please login", "warning"); navigateTo('screen-login'); return; }  
+        const infoEl = document.getElementById('checkout-item-info');  
+        if(infoEl) infoEl.innerHTML = `<strong>Purchasing:</strong> ${itemContext.title}<br><strong>Amount to Pay:</strong> Rs <span id="checkout-final-price">${itemContext.price}</span>`;  
+          
+        const accBox = document.getElementById('checkout-account-details');  
+        const instId = itemContext.instructorId;  
+        if(instId && instId !== 'admin' && window.teacherBankAccounts && window.teacherBankAccounts[instId]) {  
+            const acc = window.teacherBankAccounts[instId];  
+            accBox.innerHTML = `
+                <strong>${acc.bankName}</strong><br>
+                Account Holder: <strong>${acc.holderName}</strong><br>
+                Account/IBAN: <strong id="copy-acc-num">${acc.accountNumber}</strong>
+                <button class="copy-btn" onclick="copyToClipboard('${acc.accountNumber}')"><i class="fas fa-copy"></i> Copy</button><br><br>
+                Please transfer the exact amount and upload the transaction screenshot here.
+            `;  
+        } else {  
+            const bName = adminBankDetails.bankName || 'EasyPaisa / JazzCash / Bank';
+            const bHolder = adminBankDetails.holderName || 'Nazim Mustafa';
+            const bNumber = adminBankDetails.accountNumber || '03105784772';
+            accBox.innerHTML = `
+                <strong>${bName}</strong><br>
+                Account Holder: <strong>${bHolder}</strong><br>
+                Account Number: <strong id="copy-acc-num">${bNumber}</strong>
+                <button class="copy-btn" onclick="copyToClipboard('${bNumber}')"><i class="fas fa-copy"></i> Copy</button><br><br>
+                Please transfer the exact amount and upload the transaction screenshot here.
+            `;  
+        }  
+
+        openModal('modal-checkout');  
+    }  
+
+    window.copyToClipboard = function(text) {
+        navigator.clipboard.writeText(text).then(() => {
+            showToast("Account number copied!", "success");
+        }).catch(() => {
+            showToast("Failed to copy", "error");
+        });
+    }
+
+    window.submitPayment = async function() {  
+        if(!window.activeItemContext || !window.currentUser) return;  
+        const tidEl = document.getElementById('checkout-tid');  
+        const tid = tidEl ? tidEl.value.trim() : "";  
+        if(!tid) return;  
+        showLoader();  
+        try {  
+            const imgUrl = await window.uploadToImgBB('checkout-screenshot');  
+            if(!imgUrl) { hideLoader(); return; }  
+              
+            const priceEl = document.getElementById('checkout-final-price');  
+            const methodEl = document.getElementById('checkout-method');  
+              
+            await set(push(ref(db, 'payment_requests')), {  
+                uid: window.currentUser.uid,   
+                email: window.currentUser.email,   
+                itemId: window.activeItemContext.id,  
+                itemName: window.activeItemContext.title,  
+                itemType: window.activeItemContext.type,  
+                instructorId: window.activeItemContext.instructorId || 'admin',  
+                method: methodEl ? methodEl.value : "",   
+                transactionId: tid, screenshotUrl: imgUrl,  
+                status: 'pending', amount: Number(priceEl ? priceEl.innerText : 0), timestamp: Date.now()  
+            });  
+            showToast("Payment submitted! Waiting for Admin approval.", "success");  
+            closeTopModal();  
+            if(tidEl) tidEl.value = '';   
+            const ssEl = document.getElementById('checkout-screenshot');  
+            if(ssEl) ssEl.value = '';  
+        } catch(e) {}  
+        hideLoader();  
+    };  
+
+    window.openManageTeachersModal = async function() {  
+        if(!window.isAdmin) return;  
+        showLoader();  
+        const list = document.getElementById('admin-teachers-list');  
+        if(!list) { hideLoader(); return; }  
+        try {  
+            const snap = await get(ref(db, 'users'));  
+            list.innerHTML = '';  
+            if(snap.exists()) {  
+                const usersObj = snap.val();  
+                let htmlString = "";  
+                for(let uid in usersObj) {  
+                    const u = usersObj[uid];  
+                    if(u.email && u.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) continue;   
+                    const isT = u.isTeacher === true;  
+                    htmlString += `  
+                        <div class="list-row" style="padding: 12px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border-color);">  
+                            <div style="flex:1; overflow:hidden; text-overflow:ellipsis; padding-right:10px;">  
+                                <div style="font-weight:600; font-size:14px;">${u.name || 'Student'}</div>  
+                                <div style="font-size:12px; color:var(--text-muted);">${u.email}</div>  
+                                <div style="font-size:11px; margin-top:4px;">  
+                                    <span class="badge ${isT ? 'badge-live' : 'badge-free'}" style="font-size:10px;">  
+                                        ${isT ? 'Teacher' : 'Student'}  
+                                    </span>  
+                                </div>  
+                            </div>  
+                            <button class="btn ${isT ? 'btn-danger' : 'btn-primary'} btn-sm" onclick="toggleTeacherRole('${uid}', ${isT})">  
+                                ${isT ? 'Remove Teacher' : 'Make Teacher'}  
+                            </button>  
+                        </div>  
+                    `;  
+                }  
+                list.innerHTML = htmlString || '<p style="padding:16px; text-align:center;">No other users found.</p>';  
+            } else { list.innerHTML = '<p style="padding:16px;">No users found.</p>'; }  
+            openModal('modal-admin-teachers');  
+        } catch(e) { showToast("Error loading users", "error"); }  
+        hideLoader();  
+    }  
+
+    window.toggleTeacherRole = async function(uid, currentStatus) {  
+        if(!window.isAdmin) return;  
+        showLoader();  
+        try {  
+            await update(ref(db, `users/${uid}`), { isTeacher: !currentStatus });  
+            showToast(currentStatus ? "Role removed" : "Promoted to Teacher", "success");  
+            openManageTeachersModal();   
+        } catch(e) { showToast("Error updating role", "error"); }  
+        hideLoader();  
+    }  
+
+    function updateAdminDashboard() {  
+        const cEl = document.getElementById('admin-stat-courses');  
+        if(cEl) cEl.innerText = allCourses.length;  
+        get(ref(db, 'users')).then(snap => {  
+            const uEl = document.getElementById('admin-stat-users');  
+            if(uEl) uEl.innerText = snap.exists() ? Object.keys(snap.val()).length : 0;  
+        }).catch(()=>{});  
+    }  
+
+    window.saveAdminSettings = async function() {  
+        const keyEl = document.getElementById('admin-imgbb-key');  
+        const priceEl = document.getElementById('admin-pdf-package-price');  
+        const allPriceEl = document.getElementById('admin-all-courses-package-price');
+        const bNameEl = document.getElementById('admin-bank-name');
+        const bHolderEl = document.getElementById('admin-account-holder');
+        const bNumberEl = document.getElementById('admin-account-number');
+          
+        const key = keyEl ? keyEl.value.trim() : "";  
+        const price = priceEl ? Number(priceEl.value) : 0;  
+        const allPrice = allPriceEl ? Number(allPriceEl.value) : 0;
+        const bName = bNameEl ? bNameEl.value.trim() : "";
+        const bHolder = bHolderEl ? bHolderEl.value.trim() : "";
+        const bNumber = bNumberEl ? bNumberEl.value.trim() : "";
+          
+        showLoader();  
+        try {   
+            await update(ref(db, 'settings'), { 
+                imgbb_api_key: key, 
+                pdf_package_price: price,
+                all_courses_package_price: allPrice,
+                admin_bank: { bankName: bName, holderName: bHolder, accountNumber: bNumber }
+            });   
+            showToast("Settings Saved", "success"); closeTopModal();   
+        } catch(e) {}  
+        hideLoader();  
+    };  
+
+    window.populateAdminBannerCourseDropdown = function() {  
+        const select = document.getElementById('ab-course');  
+        if(!select) return;  
+        let htmlString = '<option value="">None (Just Image)</option>';  
+        allCourses.forEach(c => htmlString += `<option value="${c.id}">${c.title}</option>`);  
+        select.innerHTML = htmlString;  
+    }  
+      
+    window.openAdminBannersModal = function() {  
+        renderAdminBannersList();  
+        openModal('modal-admin-banners');  
+    }  
+
+    window.renderAdminBannersList = function() {  
+        const list = document.getElementById('admin-banners-list');  
+        if(!list) return;  
+        if(allBanners.length === 0) { list.innerHTML = '<p style="color:var(--text-muted); font-size:14px;">No banners added.</p>'; return; }  
+        let htmlString = "";  
+        allBanners.forEach(b => {  
+            htmlString += `<div class="list-row"><img src="${b.image}" style="width:40px; height:25px; object-fit:cover; border-radius:4px;"><div style="flex:1; padding-left:10px; font-size:13px;">${b.tag || 'Banner'} ${b.discount ? `(${b.discount}% OFF)` : ''}</div><button class="btn btn-danger btn-sm" onclick="deleteAdminBanner('${b.id}')"><i class="fas fa-trash"></i></button></div>`;  
+        });  
+        list.innerHTML = htmlString;  
+    }  
+
+    window.submitAdminBanner = async function() {  
+        showLoader();  
+        try {  
+            let imgUrl = await window.uploadToImgBB('ab-image');  
+            if(!imgUrl) { hideLoader(); return; }  
+            const tEl = document.getElementById('ab-tag'), cEl = document.getElementById('ab-course'), dEl = document.getElementById('ab-discount');  
+              
+            await set(push(ref(db, 'home_banners')), {  
+                image: imgUrl, tag: tEl ? tEl.value : "", courseId: cEl ? cEl.value : "", discount: dEl ? Number(dEl.value) : 0, createdAt: Date.now()  
+            });  
+            showToast("Banner Added", "success");  
+            const form = document.querySelector('#modal-admin-banners form');  
+            if(form) form.reset();  
+            renderAdminBannersList();  
+        } catch(e) {}  
+        hideLoader();  
+    }  
+
+    window.deleteAdminBanner = async function(id) {  
+        if(!confirm("Delete this banner?")) return;  
+        showLoader(); try { await remove(ref(db, `home_banners/${id}`)); showToast("Deleted", "success"); renderAdminBannersList(); } catch(e) {} hideLoader();  
+    }  
+
+    window.openAdminLiveModal = function(classId = null) {  
+        if(!window.isAdmin && !window.isTeacher) return;  
+
+        const manageLiveModal = document.getElementById('modal-manage-live');
+        if(manageLiveModal && manageLiveModal.classList.contains('active')) {
+            manageLiveModal.classList.remove('active');
+            manageLiveModal.style.zIndex = '';
+            activeModals = activeModals.filter(id => id !== 'modal-manage-live');
+            if(window.currentZIndex > 50) window.currentZIndex -= 10;
+        }
+
+        editLiveClassId = classId;  
+        const titleEl = document.getElementById('admin-live-modal-title');  
+        const form = document.querySelector('#modal-admin-live form');  
+          
+        const adminOpts = document.getElementById('admin-only-live-options');
+        if(adminOpts) adminOpts.style.display = window.isAdmin ? 'block' : 'none';
+
+        document.querySelectorAll('input[name="alc-day"]').forEach(cb => cb.checked = false);
+
+        if(classId) {  
+            const lc = allLiveClasses.find(c => c.id === classId);  
+            if(lc) {  
+                if(!window.isAdmin && lc.instructorId !== window.currentUser.uid) {
+                    showToast("Aap sirf apni banayi hui live class ko edit kar sakte hain.", "error");
+                    return;
+                }
+                if(titleEl) titleEl.innerText = "Edit Live Class";  
+                document.getElementById('alc-title').value = lc.title || "";  
+                document.getElementById('alc-link').value = lc.link || "";  
+                document.getElementById('alc-type').value = lc.type || "free";  
+                document.getElementById('alc-price').value = lc.price || 0;  
+                document.getElementById('alc-date').value = lc.date || "";  
+                document.getElementById('alc-time').value = lc.time || "";  
+                document.getElementById('alc-endtime').value = lc.endtime || "";  
+                document.getElementById('alc-price-group').style.display = lc.type === 'paid' ? 'block' : 'none';  
+                
+                if (lc.days && Array.isArray(lc.days)) {
+                    lc.days.forEach(d => {
+                        const cb = document.querySelector(`input[name="alc-day"][value="${d}"]`);
+                        if(cb) cb.checked = true;
+                    });
+                }
+
+                if(window.isAdmin) {
+                    document.getElementById('alc-freq').value = lc.frequency || "";
+                    document.getElementById('alc-validity').value = lc.validity || "";
+                }
+
+                oldLiveThumbUrl = lc.thumbnail || "";  
+            }  
+        } else {  
+            if(titleEl) titleEl.innerText = "Schedule Live Class";  
+            if(form) form.reset();  
+            document.getElementById('alc-price-group').style.display = 'none';  
+            
+            if(window.isAdmin) {
+                document.getElementById('alc-freq').value = "";
+                document.getElementById('alc-validity').value = "";
+            }
+
+            oldLiveThumbUrl = "";  
+        }  
+        openModal('modal-admin-live');  
+    }  
+
+    window.submitAdminLiveClass = async function() {  
+        if(!window.isAdmin && !window.isTeacher) return;  
+        showLoader();  
+        try {  
+            const tEl = document.getElementById('alc-title'), lEl = document.getElementById('alc-link'), dEl = document.getElementById('alc-date'), timeEl = document.getElementById('alc-time'), endtimeEl = document.getElementById('alc-endtime');  
+            const typeEl = document.getElementById('alc-type'), priceEl = document.getElementById('alc-price');  
+              
+            let selectedDays = [];
+            document.querySelectorAll('input[name="alc-day"]:checked').forEach(cb => selectedDays.push(cb.value));
+
+            let frequency = "";
+            let validity = "";
+            if (window.isAdmin) {
+                const fEl = document.getElementById('alc-freq');
+                const vEl = document.getElementById('alc-validity');
+                frequency = fEl ? fEl.value : "";
+                validity = vEl ? vEl.value : "";
+            }
+
+            let thumbUrl = await window.uploadToImgBB('alc-thumb');  
+            if(!thumbUrl) thumbUrl = oldLiveThumbUrl;  
+
+            if(editLiveClassId) {  
+                const existing = allLiveClasses.find(c => c.id === editLiveClassId);
+                if(existing && !window.isAdmin && existing.instructorId !== window.currentUser.uid) {
+                    showToast("Aap sirf apni banayi hui live class ko update kar sakte hain.", "error");
+                    hideLoader();
+                    return;
+                }
+                const liveData = {   
+                    title: tEl ? tEl.value : "", link: lEl ? lEl.value : "", date: dEl ? dEl.value : "", time: timeEl ? timeEl.value : "", endtime: endtimeEl ? endtimeEl.value : "", thumbnail: thumbUrl || "",   
+                    type: typeEl ? typeEl.value : 'free', price: priceEl ? Number(priceEl.value) : 0,  
+                    days: selectedDays,
+                    frequency, validity, updatedAt: Date.now() 
+                };  
+                await update(ref(db, `live_classes/${editLiveClassId}`), liveData);  
+                showToast("Live class updated!", "success");  
+            } else {  
+                const liveData = {   
+                    title: tEl ? tEl.value : "", link: lEl ? lEl.value : "", date: dEl ? dEl.value : "", time: timeEl ? timeEl.value : "", endtime: endtimeEl ? endtimeEl.value : "", thumbnail: thumbUrl || "",   
+                    type: typeEl ? typeEl.value : 'free', price: priceEl ? Number(priceEl.value) : 0,  
+                    days: selectedDays,
+                    instructorId: window.currentUser.uid, instructorName: window.currentUser.displayName || 'Teacher',
+                    frequency, validity, createdAt: Date.now()
+                };
+                await set(push(ref(db, 'live_classes')), liveData);  
+                showToast("Live class scheduled!", "success");  
+            }  
+              
+            closeTopModal();   
+            const form = document.querySelector('#modal-admin-live form');  
+            if(form) form.reset();  
+        } catch(e) {}  
+        hideLoader();  
+    };  
+
+    window.openManageLiveModal = function() {  
+        const list = document.getElementById('admin-manage-live-list');  
+        if(!list) return;  
+        let items = window.isAdmin ? allLiveClasses : allLiveClasses.filter(c => c.instructorId === window.currentUser.uid);  
+        if(items.length === 0) { list.innerHTML = '<p style="padding:16px; text-align:center;">No live classes found.</p>'; openModal('modal-manage-live'); return; }  
+          
+        let html = "";  
+        items.forEach(c => {  
+            html += `  
+                <div class="list-row">  
+                    <div style="font-weight:600; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; padding-right:10px;">${c.title} (${c.date})</div>  
+                    <div style="display:flex; gap:6px;">  
+                        <button class="btn btn-primary btn-sm" onclick="openAdminLiveModal('${c.id}')"><i class="fas fa-edit"></i></button>  
+                        <button class="btn btn-danger btn-sm" onclick="deleteLiveClass('${c.id}', '${c.instructorId}')"><i class="fas fa-trash"></i></button>  
+                    </div>  
+                </div>  
+            `;  
+        });  
+        list.innerHTML = html;  
+        openModal('modal-manage-live');  
+    }  
+
+    window.deleteLiveClass = async function(id, instructorId) {  
+        if(!window.isAdmin && instructorId !== window.currentUser.uid) {
+            showToast("Aap sirf apni live class delete kar sakte hain.", "error");
+            return;
+        }
+        if(!confirm("Delete this live class?")) return;  
+        showLoader();  
+        try {  
+            await remove(ref(db, `live_classes/${id}`));  
+            showToast("Deleted", "success");  
+            closeTopModal();  
+        } catch(e) {}  
+        hideLoader();  
+    }  
+
+    window.openAdminCourseModal = function(courseId = null) {  
+        if(!window.isAdmin && !window.isTeacher) return;  
+          
+        const manageModal = document.getElementById('modal-admin-manage-courses');  
+        if(manageModal && manageModal.classList.contains('active')) {  
+            manageModal.classList.remove('active');  
+            manageModal.style.zIndex = '';
+            activeModals = activeModals.filter(id => id !== 'modal-admin-manage-courses');  
+            if(window.currentZIndex > 50) window.currentZIndex -= 10;
+        }  
+
+        editCourseId = courseId;  
+        const form = document.querySelector('#modal-admin-course form');  
+        const titleElement = document.getElementById('admin-course-modal-title');  
+          
+        if(courseId) {  
+            const course = allCourses.find(c => c.id === courseId);  
+            if(course) {  
+                if(!window.isAdmin && course.instructorId !== window.currentUser.uid) {
+                    showToast("Aap sirf apne banaye hue courses ko edit kar sakte hain.", "error");
+                    return;
+                }
+                if(titleElement) titleElement.innerText = "Edit Course";  
+                const tEl = document.getElementById('ac-title'), dEl = document.getElementById('ac-desc'), tyEl = document.getElementById('ac-type'), pEl = document.getElementById('ac-price'), origPEl = document.getElementById('ac-original-price'), lEl = document.getElementById('ac-layout');  
+                if(tEl) tEl.value = course.title;   
+                if(dEl) dEl.value = course.description;  
+                if(tyEl) tyEl.value = course.type;   
+                if(pEl) pEl.value = course.price;  
+                if(origPEl) origPEl.value = course.originalPrice || 0;
+                if(lEl) lEl.value = course.layout || "half";  
+                oldThumbnailUrl = course.thumbnail || "";  
+            }  
+        } else {   
+            if(titleElement) titleElement.innerText = "Add New Course";   
+            if(form) form.reset();   
+            oldThumbnailUrl = "";   
+            const lEl = document.getElementById('ac-layout');  
+            if(lEl) lEl.value = "half";  
+        }  
+        openModal('modal-admin-course');  
+    }  
+
+    window.submitAdminCourse = async function() {  
+        if(!window.isAdmin && !window.isTeacher) return;  
+        showLoader();  
+        try {  
+            const tEl = document.getElementById('ac-title'), dEl = document.getElementById('ac-desc'), tyEl = document.getElementById('ac-type'), pEl = document.getElementById('ac-price'), origPEl = document.getElementById('ac-original-price'), lEl = document.getElementById('ac-layout');  
+            let thumbUrl = await window.uploadToImgBB('ac-thumb');  
+            if(!thumbUrl) thumbUrl = oldThumbnailUrl;   
+
+            if(editCourseId) {   
+                const existing = allCourses.find(c => c.id === editCourseId);  
+                if(existing && !window.isAdmin && existing.instructorId !== window.currentUser.uid) { 
+                    showToast("Aap sirf apne banaye hue courses ko edit kar sakte hain.", "error"); 
+                    hideLoader(); 
+                    return; 
+                }  
+                const courseData = {   
+                    title: tEl ? tEl.value : "", description: dEl ? dEl.value : "", type: tyEl ? tyEl.value : "paid", price: pEl ? Number(pEl.value) : 0, originalPrice: origPEl ? Number(origPEl.value) : 0,   
+                    thumbnail: thumbUrl || "", layout: lEl ? lEl.value : "half", status: 'published', updatedAt: Date.now()  
+                };
+                await update(ref(db, `courses/${editCourseId}`), courseData);   
+                showToast("Course updated successfully", "success");   
+            } else {   
+                const courseData = {   
+                    title: tEl ? tEl.value : "", description: dEl ? dEl.value : "", type: tyEl ? tyEl.value : "paid", price: pEl ? Number(pEl.value) : 0, originalPrice: origPEl ? Number(origPEl.value) : 0,   
+                    thumbnail: thumbUrl || "", layout: lEl ? lEl.value : "half", status: 'published',  
+                    instructorId: window.currentUser.uid, instructorName: window.currentUser.displayName || 'Teacher', createdAt: Date.now() 
+                };
+                await set(push(ref(db, 'courses')), courseData);   
+                showToast("Course created successfully", "success");   
+            }  
+              
+            closeTopModal();   
+            const form = document.querySelector('#modal-admin-course form');  
+            if(form) form.reset();          
+            populateAdminBannerCourseDropdown();  
+        } catch(e) { showToast("Error saving course", "error"); }  
+        hideLoader();  
+    };  
+
+    window.openAdminPdfModal = function() {  
+        if(!window.isAdmin) return;  
+        renderAdminPdfList();  
+        openModal('modal-admin-pdf');  
+    }  
+
+    window.submitAdminPdf = async function() {  
+        if(!window.isAdmin) return;  
+        showLoader();  
+        try {  
+            const tEl = document.getElementById('ap-title'), lEl = document.getElementById('ap-link'), tyEl = document.getElementById('ap-type'), pEl = document.getElementById('ap-price');  
+            let thumbUrl = await window.uploadToImgBB('ap-thumb');  
+            if(!thumbUrl) { hideLoader(); return; }  
+              
+            await set(push(ref(db, 'pdf_books')), {  
+                title: tEl ? tEl.value : "", url: lEl ? lEl.value : "", thumbnail: thumbUrl, type: tyEl ? tyEl.value : 'free', price: pEl ? Number(pEl.value) : 0, createdAt: Date.now()  
+            });  
+            showToast("PDF Book Uploaded!", "success");  
+            const form = document.querySelector('#modal-admin-pdf form');  
+            if(form) form.reset();  
+            if(pEl) document.getElementById('ap-price-group').style.display = 'none';  
+        } catch(e) {}  
+        hideLoader();  
+    }  
+
+    window.renderAdminPdfList = function() {  
+        const list = document.getElementById('admin-pdf-list');  
+        if(!list) return;  
+        if(allPdfBooks.length === 0) { list.innerHTML = '<p style="color:var(--text-muted); font-size:14px;">No books uploaded.</p>'; return; }  
+        let htmlString = "";  
+        allPdfBooks.forEach(b => {  
+            htmlString += `<div class="list-row"><div style="flex:1;">${b.title}</div><button class="btn btn-danger btn-sm" onclick="deleteAdminPdf('${b.id}')"><i class="fas fa-trash"></i></button></div>`;  
+        });  
+        list.innerHTML = htmlString;  
+    }  
+
+    window.deleteAdminPdf = async function(id) {  
+        if(!confirm("Delete this book?")) return;  
+        showLoader(); try { await remove(ref(db, `pdf_books/${id}`)); showToast("Deleted", "success"); } catch(e) {} hideLoader();  
+    }  
+
+    window.renderManageCoursesList = function() {  
+        const list = document.getElementById('admin-manage-courses-list');  
+        if(!list) return;  
+          
+        if(!window.currentUser) return;  
+        let coursesToManage = window.isAdmin ? allCourses : allCourses.filter(c => c.instructorId === window.currentUser.uid);  
+          
+        if(coursesToManage.length === 0) { list.innerHTML = '<p style="padding:16px;">No courses found.</p>'; return; }  
+          
+        let htmlString = "";  
+        coursesToManage.forEach(c => {  
+            htmlString += `  
+                <div class="list-row">  
+                    <div style="font-weight:600; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; padding-right:10px;">${c.title}</div>  
+                    <div style="display:flex; gap:6px;">  
+                        <button class="btn btn-secondary btn-sm" title="Manage Lessons" onclick="openAdminManageLessons('${c.id}')"><i class="fas fa-list"></i></button>  
+                        <button class="btn btn-primary btn-sm" title="Edit Course" onclick="openAdminCourseModal('${c.id}')"><i class="fas fa-edit"></i></button>  
+                        <button class="btn btn-danger btn-sm" title="Delete Course" onclick="deleteAdminCourse('${c.id}', '${c.instructorId}')"><i class="fas fa-trash"></i></button>  
+                    </div>  
+                </div>  
+            `;  
+        });  
+        list.innerHTML = htmlString;  
+    }  
+
+    window.deleteAdminCourse = async function(id, instructorId) {  
+        if(!window.isAdmin && instructorId !== window.currentUser.uid) {  
+            showToast("Aap sirf apne banaye hue courses ko delete kar sakte hain.", "error");  
+            return;  
+        }  
+        if(!confirm("Delete course and all lessons?")) return;  
+        showLoader(); try { await remove(ref(db, `courses/${id}`)); await remove(ref(db, `lessons/${id}`)); showToast("Deleted", "success"); populateAdminBannerCourseDropdown(); } catch(e) {} hideLoader();  
+    }  
+
+    window.openAdminManageLessons = function(courseId) {  
+        const manageModal = document.getElementById('modal-admin-manage-courses');  
+        if(manageModal && manageModal.classList.contains('active')) {  
+            manageModal.classList.remove('active');  
+            manageModal.style.zIndex = '';  
+            activeModals = activeModals.filter(id => id !== 'modal-admin-manage-courses');  
+            if(window.currentZIndex > 50) window.currentZIndex -= 10;  
+        }  
+
+        manageLessonsCourseId = courseId;   
+
+        const course = allCourses.find(c => c.id === courseId);
+        const formEl = document.getElementById('form-admin-add-lesson');
+        const noticeEl = document.getElementById('lesson-add-permission-notice');
+
+        if(course && !window.isAdmin && course.instructorId !== window.currentUser.uid) {
+            if(formEl) formEl.style.display = 'none';
+            if(noticeEl) noticeEl.classList.remove('hidden');
+        } else {
+            if(formEl) formEl.style.display = 'block';
+            if(noticeEl) noticeEl.classList.add('hidden');
+        }
+
+        renderManageLessonsList();   
+        openModal('modal-admin-manage-lessons');   
+    }  
+      
+    window.renderManageLessonsList = async function() {  
+        const list = document.getElementById('admin-manage-lessons-list');  
+        if(!list) return;  
+        list.innerHTML = '<div class="spinner" style="margin:10px auto;"></div>';  
+
+        const course = allCourses.find(c => c.id === manageLessonsCourseId);
+        const canManage = window.isAdmin || (course && course.instructorId === window.currentUser.uid);
+
+        try {  
+            const snap = await get(ref(db, `lessons/${manageLessonsCourseId}`));  
+            if(!snap.exists()) { list.innerHTML = '<p style="color:var(--text-muted); font-size:14px;">No lessons added.</p>'; return; }  
+            let htmlString = "";  
+            snap.forEach(child => {  
+                htmlString += `
+                    <div class="list-row" style="padding:8px 0;">
+                        <div style="font-size:14px; flex:1;">${child.val().title}</div>
+                        ${canManage ? `<button class="btn btn-danger btn-sm" onclick="deleteAdminLesson('${child.key}')"><i class="fas fa-trash"></i></button>` : ''}
+                    </div>
+                `;  
+            });  
+            list.innerHTML = htmlString;  
+        } catch(e) {}  
+    }  
+      
+    window.submitAdminLesson = async function() {  
+        if(!manageLessonsCourseId) return;  
+
+        const course = allCourses.find(c => c.id === manageLessonsCourseId);
+        if(!window.isAdmin && course && course.instructorId !== window.currentUser.uid) {
+            showToast("Aap kisi dusre teacher ke course mein lesson add nahi kar sakte.", "error");
+            return;
+        }
+
+        showLoader();  
+        try {  
+            const titleEl = document.getElementById('al-title'), urlEl = document.getElementById('al-url');  
+            await set(push(ref(db, `lessons/${manageLessonsCourseId}`)), { title: titleEl ? titleEl.value : "", url: urlEl ? urlEl.value : "", createdAt: Date.now() });  
+            showToast("Lesson Added!", "success");   
+            if(titleEl) titleEl.value = ''; if(urlEl) urlEl.value = ''; renderManageLessonsList();   
+        } catch(e) {}   
+        hideLoader();  
+    };  
+      
+    window.deleteAdminLesson = async function(lessonId) {  
+        const course = allCourses.find(c => c.id === manageLessonsCourseId);
+        if(!window.isAdmin && course && course.instructorId !== window.currentUser.uid) {
+            showToast("Aap kisi dusre teacher ke course ka lesson delete nahi kar sakte.", "error");
+            return;
+        }
+        if(!confirm("Delete lesson?")) return;  
+        showLoader(); try { await remove(ref(db, `lessons/${manageLessonsCourseId}/${lessonId}`)); showToast("Deleted", "success"); renderManageLessonsList(); } catch(e) {} hideLoader();  
+    }  
+
+    window.approvePayment = async function(reqId, uid, itemId, itemType, instructorId, amount, userEmail, itemName) {  
+        showLoader();   
+        try {   
+            await update(ref(db, `payment_requests/${reqId}`), { status: 'approved', resolvedAt: Date.now() });   
+              
+            if(itemType === 'course') {  
+                await set(ref(db, `course_access/${uid}/${itemId}`), { courseId: itemId, accessType: 'lifetime', status: 'active', grantedAt: Date.now(), paymentId: reqId });  
+                
+                if(instructorId && instructorId !== 'admin' && instructorId !== ADMIN_EMAIL) {  
+                    const teacherShare = Math.round(Number(amount) * 0.40);  
+                    const wRef = ref(db, `teacher_wallets/${instructorId}/balance`);  
+                    const wSnap = await get(wRef);  
+                    const currentBal = wSnap.exists() ? wSnap.val() : 0;  
+                    await set(wRef, currentBal + teacherShare);  
+                }  
+
+            } else if(itemType === 'live') {  
+                const liveObj = allLiveClasses.find(c => c.id === itemId);
+                let expiresAt = 0; 
+
+                if (liveObj && liveObj.validity) {
+                    const now = Date.now();
+                    const dayMs = 24 * 60 * 60 * 1000;
+                    if (liveObj.validity === '1 Month') expiresAt = now + (30 * dayMs);
+                    else if (liveObj.validity === '3 Months') expiresAt = now + (90 * dayMs);
+                    else if (liveObj.validity === '6 Months') expiresAt = now + (180 * dayMs);
+                    else if (liveObj.validity === '1 Year') expiresAt = now + (365 * dayMs);
+                }
+
+                await set(ref(db, `live_access/${uid}/${itemId}`), { 
+                    classId: itemId, 
+                    status: 'active', 
+                    grantedAt: Date.now(), 
+                    expiresAt: expiresAt, 
+                    paymentId: reqId 
+                });  
+                
+                if(instructorId && instructorId !== 'admin' && instructorId !== ADMIN_EMAIL) {  
+                    const teacherShare = Math.round(Number(amount) * 0.60);  
+                    const wRef = ref(db, `teacher_wallets/${instructorId}/balance`);  
+                    const wSnap = await get(wRef);  
+                    const currentBal = wSnap.exists() ? wSnap.val() : 0;  
+                    await set(wRef, currentBal + teacherShare);  
+                }  
+
+            } else if(itemType === 'pdf') {  
+                await set(ref(db, `pdf_access/${uid}/${itemId}`), { bookId: itemId, status: 'active', grantedAt: Date.now(), paymentId: reqId });  
+            } else if(itemType === 'package') {  
+                await update(ref(db, `users/${uid}`), { lifetimePdfAccess: true });  
+            } else if(itemType === 'all_courses_package') {
+                await update(ref(db, `users/${uid}`), { lifetimeAllCoursesAccess: true });
+            }  
+
+            showToast("Approved & Revenue Split Calculated!", "success");   
+        } catch(e) { showToast("Error approving payment", "error"); }   
+        hideLoader();  
+    };  
+      
+    window.rejectPayment = async function(reqId) { showLoader(); try { await update(ref(db, `payment_requests/${reqId}`), { status: 'rejected' }); showToast("Rejected", "success"); } catch(e) {} hideLoader(); };  
+      
+    window.openNotifications = function() { if(!window.currentUser) { showToast("Login to view", "warning"); navigateTo('screen-login'); return; } openModal('modal-notifications'); }  
+</script>  
+</body>
+</html>

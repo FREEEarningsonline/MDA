@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <!-- موبائل زوم لاک اور آئی فون ڈائنامک آئی لینڈ / ناچ سپورٹ -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Mustafa Digital Academy (MDA) — Learn • Grow • Earn</title>
+  <meta name="description" content="Mustafa Digital Academy (MDA): Online Courses, eBooks, Live Classes, Mock Tests, Smart Tools, Career Jobs, Certificates, and Rewards." />
+  <meta name="theme-color" content="#071d3b" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&family=Manrope:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  
+  <!-- Firebase & QR Libraries -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  
+  <style>
+    :root {
+      --primary: #4A148C;
+      --primary-light: #6A1B9A;
+      --primary-soft: #F3E5F5;
+      --secondary: #00BCD4;
+      --accent: #FFD54F;
+      --success: #2E7D32;
+      --success-bg: #E8F5E9;
+      --danger: #D32F2F;
+      --danger-bg: #FFEBEE;
+      --warning: #EF6C00;
+      --warning-bg: #FFF3E0;
+      --bg: #F4F6FA;
+      --card: #FFFFFF;
+      --text: #1A1C20;
+      --muted: #66758a;
+      --border: #E2E8F0;
+      --radius: 16px;
+      --shadow: 0 14px 35px rgba(10,35,65,.10);
+      --navy: #071d3b;
+      --navy2: #0c2b50;
+      --gold: #f4b900;
+      --ink: #14243a;
+      --pale: #f3f6fc;
+      --white: #fff;
+    }
+
+    /* 1. گلوبل فکسز (زوم اور افقی اسکرول کا خاتمہ) */
+    *, *::before, *::after { 
+      box-sizing: border-box; 
+      -webkit-tap-highlight-color: transparent; 
+      max-width: 100%;
+    }
+
+    html, body {
+      width: 100%;
+      max-width: 100vw;
+      margin: 0; padding: 0;
+      color: var(--ink);
+      font-family: 'DM Sans', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #fff;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden !important;
+      position: relative;
+      touch-action: pan-y;
+      -ms-touch-action: pan-y;
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
+    }
+
+    img, video, svg {
+      max-width: 100% !important;
+      height: auto;
+      display: block;
+    }
+
+    iframe {
+      max-width: 100% !important;
+      border: none;
+    }
+
+    /* ============================================================
+       🎬 ویڈیو پلیئر اور آئی فریم فکس (چھوٹا سائز اور اوپر کی لکیر درست)
+       ============================================================ */
+    #coursePlayerSlot {
+      width: 100% !important;
+      background: #0F172A;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      position: relative;
+    }
+
+    #coursePlayerSlot iframe,
+    .video-frame,
+    .video-player-wrap iframe {
+      width: 100% !important;
+      aspect-ratio: 16 / 9;
+      min-height: 250px !important;
+      height: 250px;
+      border: none !important;
+      display: block !important;
+      background: #000;
+    }
+
+    @media (min-width: 480px) {
+      #coursePlayerSlot iframe,
+      .video-frame,
+      .video-player-wrap iframe {
+        min-height: 290px !important;
+        height: 290px;
+      }
+    }
+
+    @media (min-width: 768px) {
+      #coursePlayerSlot iframe,
+      .video-frame,
+      .video-player-wrap iframe {
+        min-height: 430px !important;
+        height: 430px;
+      }
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button, input, textarea, select { font-family: inherit; }
+
+    .wrap { width: min(1180px, 92%); margin: auto; }
+    .eyebrow { color: #c99500; text-transform: uppercase; letter-spacing: 2px; font-size: 11px; font-weight: 800; }
+
+    /* 2. ہیڈر اور نیویگیشن */
+    .topbar { background: var(--navy); color: #dbe5f3; font-size: 12px; padding: 9px 0; width: 100%; }
+    .topbar .wrap { display: flex; justify-content: space-between; align-items: center; gap: 15px; }
+
+    .nav {
+      height: 74px; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.98);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border); width: 100%;
+    }
+    .brand { 
+      display: flex; align-items: center; gap: 10px; 
+      font-family: 'Manrope', sans-serif; font-weight: 800; 
+      font-size: 17px; line-height: 1.05; cursor: pointer; 
+      min-width: 0; flex: 1;
+    }
+    .brand-mark {
+      height: 40px; width: 40px; border-radius: 12px;
+      background: linear-gradient(145deg, #ffd34d, #e6a600);
+      display: grid; place-items: center; color: var(--navy);
+      font-size: 20px; box-shadow: 0 5px 14px #f4b90040; flex-shrink: 0;
+    }
+    .brand-text { min-width: 0; overflow: hidden; }
+    .brand-text h1, .brand-text span {
+      margin: 0; font-size: 16px; font-weight: 800;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;
+    }
+    .brand small { display: block; font: 700 9px 'DM Sans'; letter-spacing: 2px; color: #a67a00; margin-top: 3px; }
+
+    .navlinks { display: flex; gap: 20px; font-size: 13px; font-weight: 700; color: #45536a; align-items: center; }
+    .navlinks button { 
+      background: none; border: none; font-size: 13px; font-weight: 700; 
+      color: #45536a; cursor: pointer; padding: 6px 4px; transition: .2s; 
+    }
+    .navlinks button:hover, .navlinks button.active { color: #c99500; }
+
+    .nav-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .menu-toggle-btn {
+      width: 44px; height: 44px; border-radius: 12px; border: 1.5px solid var(--border);
+      background: #f8faff; color: var(--navy); display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 5px; cursor: pointer; transition: .2s;
+      flex-shrink: 0;
+    }
+    .menu-toggle-btn span { width: 20px; height: 2px; background: var(--navy); border-radius: 2px; }
+
+    /* 3. سائیڈ ڈراور مینو */
+    .drawer-overlay {
+      position: fixed; inset: 0; background: rgba(7, 29, 59, 0.55);
+      backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
+      z-index: 300; opacity: 0; pointer-events: none; transition: opacity .25s ease;
+    }
+    .drawer-overlay.open { opacity: 1; pointer-events: auto; }
+    .drawer-menu {
+      position: fixed; top: 0; right: 0; width: min(320px, 85vw); height: 100%;
+      background: #fff; z-index: 310; box-shadow: -10px 0 35px rgba(0,0,0,0.2);
+      transform: translateX(100%); transition: transform .28s cubic-bezier(.25,1,.5,1);
+      display: flex; flex-direction: column; padding: 20px 20px calc(24px + env(safe-area-inset-bottom));
+    }
+    .drawer-overlay.open .drawer-menu { transform: translateX(0); }
+    .drawer-head { display: flex; align-items: center; justify-content: space-between; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+    .drawer-close { width: 36px; height: 36px; border-radius: 50%; border: none; background: #f1f4f9; font-size: 17px; cursor: pointer; }
+    .drawer-links { display: flex; flex-direction: column; gap: 8px; margin-top: 18px; flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    .drawer-item {
+      display: flex; align-items: center; gap: 12px; padding: 13px 16px; border-radius: 14px;
+      font-size: 14px; font-weight: 800; color: var(--navy); background: #f8faff; border: 1.5px solid transparent; cursor: pointer; transition: .2s;
+    }
+    .drawer-item:active, .drawer-item.active { background: #fff4cf; border-color: #ffd34d; color: #875f00; }
+    .drawer-item .d-icon { font-size: 19px; width: 28px; text-align: center; }
+
+    /* 4. بٹنز اور ان پٹ اسٹائلز */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 12px 22px; border-radius: 30px; background: var(--gold); color: #17243a;
+      font-weight: 800; font-size: 13px; border: none; cursor: pointer;
+      box-shadow: 0 7px 16px #f4b90040; transition: .2s; white-space: nowrap;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn.dark { background: var(--navy); color: #fff; box-shadow: none; }
+    .btn-sm { padding: 9px 16px; font-size: 12px; border-radius: 20px; }
+    .btn-primary { background: var(--primary); color: #fff; box-shadow: 0 4px 14px rgba(74, 20, 140, 0.25); }
+    .btn-secondary { background: #00838F; color: #fff; }
+    .btn-success { background: var(--success); color: #fff; }
+    .btn-warning { background: #F59E0B; color: #1E1B4B; }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-soft { background: var(--primary-soft); color: var(--primary); }
+    .btn-outline { background: #fff; color: var(--primary); border: 1.5px solid var(--primary); }
+    .btn-block { width: 100%; }
+
+    .field { margin-bottom: 14px; }
+    .field label { display: block; font-size: 12px; font-weight: 700; color: #334155; margin-bottom: 6px; }
+    .input {
+      width: 100%; padding: 12px 14px; border-radius: 12px; border: 1.5px solid var(--border);
+      font-size: 14px; background: #fff; outline: none; transition: 0.2s;
+    }
+    .input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(74, 20, 140, 0.1); }
+
+    /* 5. ایپلیکیشن کارڈز اور گرڈ سسٹم */
+    .app-container { 
+      width: 100%; max-width: 1200px; 
+      margin: 0 auto; padding: 20px 16px 50px 16px; 
+      overflow-x: hidden; 
+    }
+    .app-container:empty { display: none; padding: 0; }
+
+    .card { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow); padding: 18px; width: 100%; margin-bottom: 16px; }
+    .grid-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 16px; width: 100%; }
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; width: 100%; }
+
+    /* Search & Hero in App */
+    .hero-welcome {
+      background: linear-gradient(135deg, var(--primary) 0%, #7B1FA2 60%, #00838F 100%);
+      color: #fff; border-radius: 20px; padding: 22px; margin-bottom: 16px;
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px;
+      box-shadow: 0 10px 25px rgba(74, 20, 140, 0.22);
+    }
+    .search-wrap { position: relative; margin-bottom: 16px; width: 100%; }
+    .search-input {
+      width: 100%; padding: 14px 44px 14px 44px; border-radius: 16px;
+      border: 1.5px solid var(--border); background: #fff; font-size: 14px; font-weight: 600;
+      box-shadow: var(--shadow); outline: none; transition: border-color 0.2s;
+    }
+    .search-input:focus { border-color: var(--primary); }
+    .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); font-size: 17px; color: var(--muted); }
+    .search-clear {
+      position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+      border: none; background: #EEF2F7; color: #334155; width: 28px; height: 28px;
+      border-radius: 50%; cursor: pointer; font-weight: 800; display: none;
+    }
+
+    /* Banners Carousel */
+    .banners-track { 
+      display: flex; gap: 14px; overflow-x: auto; 
+      padding-bottom: 10px; margin-bottom: 18px; 
+      scroll-snap-type: x mandatory; width: 100%;
+      -webkit-overflow-scrolling: touch;
+    }
+    .banners-track::-webkit-scrollbar { height: 4px; }
+    .banners-track::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 99px; }
+    .banner-slide {
+      flex: 0 0 min(88%, 440px) !important;
+      scroll-snap-align: start; border-radius: 18px; overflow: hidden;
+      position: relative; background: #1E1B4B; color: #fff; cursor: pointer; min-height: 165px;
+      box-shadow: 0 8px 22px rgba(0,0,0,0.12);
+    }
+    .banner-slide img { width: 100%; height: 165px; object-fit: cover; opacity: 0.92; }
+    .banner-overlay {
+      position: absolute; inset: auto 0 0 0; padding: 14px;
+      background: linear-gradient(transparent, rgba(15, 10, 35, 0.92));
+      display: flex; justify-content: space-between; align-items: flex-end; gap: 8px;
+    }
+
+    /* Category Chips */
+    .chips-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 16px; -webkit-overflow-scrolling: touch; }
+    .chips-row::-webkit-scrollbar { display: none; }
+    .chip {
+      flex-shrink: 0; border: 1.5px solid var(--border); background: #fff; color: var(--text);
+      padding: 8px 16px; border-radius: 999px; font-size: 13px; font-weight: 700; cursor: pointer;
+      white-space: nowrap; transition: 0.18s;
+    }
+    .chip.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+    /* Media Cards */
+    .media-card {
+      background: #fff; border-radius: 18px; border: 1px solid var(--border); overflow: hidden;
+      box-shadow: var(--shadow); display: flex; flex-direction: column; transition: transform 0.2s, box-shadow 0.2s; cursor: pointer;
+    }
+    .media-card:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(0,0,0,0.1); }
+    .media-thumb { position: relative; height: 160px; background: #EDE7F6; overflow: hidden; }
+    .media-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    
+    .badge {
+      display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 999px;
+      font-size: 11px; font-weight: 800; white-space: nowrap;
+    }
+    .badge-free { background: var(--success-bg); color: var(--success); }
+    .badge-paid { background: var(--primary-soft); color: var(--primary); }
+    .badge-owned { background: #E0F7FA; color: #006064; }
+    .badge-warn { background: var(--warning-bg); color: var(--warning); }
+    .badge-float { position: absolute; top: 10px; right: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.18); }
+
+    .section-head { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin: 24px 0 14px 0; }
+    .section-kicker { font-size: 11px; font-weight: 800; color: #00838F; letter-spacing: 0.9px; text-transform: uppercase; margin: 0 0 2px 0; }
+    .section-title { font-size: 20px; font-weight: 800; margin: 0; color: var(--text); }
+    .pill-tag { background: #E0F7FA; color: #006064; padding: 6px 12px; border-radius: 10px; font-size: 11px; font-weight: 800; white-space: nowrap; }
+
+    /* Portal & Tools Cards */
+    .portal-card {
+      background: #fff; border-radius: 18px; border: 1px solid var(--border); padding: 18px;
+      box-shadow: var(--shadow); cursor: pointer; display: flex; flex-direction: column; gap: 8px;
+      transition: 0.2s; position: relative;
+    }
+    .portal-card:hover { border-color: var(--primary); transform: translateY(-3px); }
+    .portal-icon { width: 46px; height: 46px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+
+    .tool-tile {
+      background: #fff; border-radius: 18px; border: 1px solid var(--border); padding: 18px 14px;
+      text-align: center; cursor: pointer; box-shadow: var(--shadow); transition: 0.2s;
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+    }
+    .tool-tile:hover { border-color: var(--primary); transform: translateY(-3px); }
+    .tool-avatar {
+      width: 58px; height: 58px; border-radius: 16px; background: #F1F5F9; overflow: hidden;
+      display: flex; align-items: center; justify-content: center; font-size: 26px;
+    }
+    .tool-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+    .sub-header {
+      display: flex; align-items: center; gap: 14px; margin-bottom: 16px;
+      background: #fff; padding: 14px 18px; border-radius: 16px; border: 1px solid var(--border);
+    }
+    .back-btn {
+      width: 40px; height: 40px; border-radius: 12px; border: 1px solid var(--border);
+      background: #F8FAFC; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    }
+
+    /* Calculator */
+    .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    .calc-btn {
+      padding: 15px 8px; border-radius: 12px; border: 1px solid var(--border); background: #F8FAFC;
+      font-size: 17px; font-weight: 800; cursor: pointer;
+    }
+    .calc-btn.op { background: var(--primary-soft); color: var(--primary); }
+    .calc-btn.eq { background: var(--primary); color: #fff; grid-column: span 2; }
+
+    /* Progress Bar */
+    .progress-bar { width: 100%; height: 10px; border-radius: 99px; background: #E2E8F0; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary)); border-radius: 99px; transition: width 0.3s; }
+
+    /* 6. لینڈنگ پیج سیکشنز */
+    .hero { background: linear-gradient(110deg,#f7f9fd 0%,#f7f9fd 51%,#e9eef8 51%,#e9eef8 100%); overflow: hidden; width: 100%; }
+    .hero-grid { display: grid; grid-template-columns: 1fr 1.05fr; min-height: 440px; align-items: center; gap: 28px; width: 100%; }
+    .hero-copy { padding: 50px 0; }
+    .hero h1 { font: 800 clamp(28px, 4.4vw, 55px)/1.1 'Manrope', sans-serif; margin: 16px 0; color: #0a1d38; letter-spacing: -1px; }
+    .hero h1 span { color: #e4aa00; }
+    .hero p { max-width: 480px; color: #66758a; line-height: 1.75; font-size: 14px; margin-bottom: 24px; }
+    .hero-actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .watch { font-size: 13px; font-weight: 800; color: #33445c; display: inline-flex; align-items: center; cursor: pointer; }
+    .play { display: inline-grid; place-items: center; border: 1px solid #ccd5e3; border-radius: 50%; width: 38px; height: 38px; margin-right: 8px; color: #c99500; }
+    .hero-photo { height: 380px; border-radius: 160px 0 0 22px; overflow: hidden; position: relative; box-shadow: var(--shadow); width: 100%; }
+    .hero-photo img { width: 100%; height: 100%; object-fit: cover; }
+    .hero-photo:after { content: 'LEARN • BUILD • GROW'; position: absolute; bottom: 18px; right: 18px; background: #071d3be8; color: white; border-radius: 30px; padding: 11px 16px; font-size: 10px; letter-spacing: 1.5px; font-weight: 800; }
+
+    .section { padding: 60px 0; width: 100%; overflow: hidden; }
+    .section-head { text-align: center; margin: 0 auto 34px; max-width: 650px; }
+    .section-head h2 { font: 800 clamp(22px, 3.2vw, 32px) 'Manrope', sans-serif; margin: 8px 0; color: #0b203d; }
+    .section-head p { font-size: 13px; color: var(--muted); margin: 0; }
+
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; width: 100%; }
+    .course { background: #fff; border: 1px solid #edf0f5; border-radius: 16px; overflow: hidden; box-shadow: 0 8px 24px #102b4b0b; }
+    .course img { width: 100%; height: 145px; object-fit: cover; }
+    .course-body { padding: 16px; }
+    .course-icon { width: 36px; height: 36px; border-radius: 11px; background: #fff4cf; color: #a97b00; display: grid; place-items: center; font-weight: 900; margin-top: -34px; position: relative; border: 3px solid #fff; }
+    .course h3 { font: 800 15px 'Manrope', sans-serif; margin: 12px 0 6px; }
+    .course p { font-size: 12px; color: var(--muted); line-height: 1.55; margin: 0 0 12px; }
+    .more { font-size: 12px; color: #b08300; font-weight: 800; cursor: pointer; }
+
+    .why { background: var(--navy); color: #fff; border-radius: 24px; overflow: hidden; display: grid; grid-template-columns: 1fr 1fr; width: 100%; }
+    .why-copy { padding: 40px; }
+    .why h2 { font: 800 clamp(22px, 3vw, 30px)/1.2 'Manrope', sans-serif; margin: 10px 0 18px; }
+    .why h2 span { color: var(--gold); }
+    .checks { display: grid; gap: 12px; font-size: 13px; color: #e1e9f4; }
+    .checks div:before { content: '✓'; display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--gold); color: var(--navy); font-weight: 900; margin-right: 10px; }
+    .why-photo { min-height: 280px; clip-path: polygon(15% 0, 100% 0, 100% 100%, 0 100%); }
+    .why-photo img { width: 100%; height: 100%; object-fit: cover; }
+
+    .projects { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; width: 100%; }
+    .project { height: 190px; border-radius: 16px; overflow: hidden; position: relative; width: 100%; }
+    .project img { width: 100%; height: 100%; object-fit: cover; }
+    .project span { position: absolute; bottom: 0; left: 0; right: 0; padding: 25px 16px 12px; color: #fff; font-weight: 800; font-size: 13px; background: linear-gradient(transparent, #061a33db); }
+
+    .process { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; text-align: center; width: 100%; }
+    .step { padding: 18px 10px; }
+    .step-icon { height: 60px; width: 60px; margin: 0 auto 12px; border-radius: 50%; background: #eef2fa; display: grid; place-items: center; font-size: 22px; color: var(--navy); }
+    .step h3 { font: 800 14px 'Manrope', sans-serif; margin: 0 0 6px; }
+    .step p { font-size: 12px; color: var(--muted); line-height: 1.5; margin: 0; }
+
+    .split { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 30px; background: #f4f7fc; border-radius: 22px; overflow: hidden; width: 100%; }
+    .split img { width: 100%; height: 300px; object-fit: cover; }
+    .split-copy { padding: 24px 34px 24px 0; }
+    .split h2 { font: 800 clamp(20px, 3vw, 29px)/1.2 'Manrope', sans-serif; margin: 10px 0; }
+    .split p { font-size: 13px; color: var(--muted); line-height: 1.65; margin-bottom: 20px; }
+
+    .testimonials { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; width: 100%; }
+    .quote { background: #f3f6fc; border-radius: 18px; padding: 22px; display: flex; gap: 14px; width: 100%; }
+    .quote-mark { font: 800 40px Georgia, serif; color: #e6b000; line-height: 1; }
+    .quote p { font-size: 13px; color: #53647a; line-height: 1.65; margin: 0 0 12px; }
+    .quote strong { font-size: 12px; }
+    .quote small { display: block; color: #8793a4; font-size: 10px; margin-top: 3px; }
+
+    .cta { background: var(--navy); border-radius: 20px; padding: 30px; color: white; display: flex; align-items: center; justify-content: space-between; gap: 20px; width: 100%; overflow: hidden; position: relative; }
+    .cta:after { content: 'MDA'; position: absolute; right: 180px; top: -25px; font: 800 100px 'Manrope', sans-serif; color: #ffffff0a; pointer-events: none; }
+    .cta h2 { font: 800 clamp(19px, 2.8vw, 25px) 'Manrope', sans-serif; margin: 0 0 6px; }
+    .cta p { color: #c6d3e5; font-size: 12px; margin: 0; }
+
+    .footer { background: #f7f9fc; padding: 46px 0 0; margin-top: 60px; border-top: 1px solid #eef2f8; width: 100%; }
+    .footgrid { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1.2fr; gap: 30px; padding-bottom: 35px; width: 100%; }
+    .footer h4 { font: 800 14px 'Manrope', sans-serif; margin: 0 0 14px; }
+    .footer p, .footer a { font-size: 12px; color: #65748a; line-height: 2; display: block; }
+    .social { display: flex; gap: 8px; margin-top: 15px; }
+    .social a { height: 30px; width: 30px; border-radius: 50%; background: #e9eef6; display: grid; place-items: center; font-weight: 800; color: var(--navy); }
+    .copyright { background: var(--navy); color: #c8d4e4; padding: 14px 0; font-size: 11px; width: 100%; }
+    .copyright .wrap { display: flex; justify-content: space-between; gap: 10px; }
+
+    .wa { 
+      position: fixed; right: 20px; 
+      bottom: calc(20px + env(safe-area-inset-bottom)); 
+      background: #1ebd65; color: white; border-radius: 50px; 
+      padding: 12px 18px; font-size: 13px; font-weight: 800; 
+      box-shadow: 0 8px 25px rgba(0,0,0,0.22); z-index: 120; 
+    }
+
+    /* 7. موڈل اور ٹوسٹ */
+    .modal-backdrop {
+      position: fixed; inset: 0; background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(4px);
+      z-index: 400; display: none; align-items: center; justify-content: center; padding: 16px;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal-box {
+      background: #fff; border-radius: 24px; width: 100%; max-width: 600px; max-height: 90vh;
+      overflow-y: auto; box-shadow: 0 24px 50px rgba(0,0,0,0.3);
+    }
+    .modal-head { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: #fff; z-index: 10; }
+    .modal-body { padding: 20px; }
+    .close-x { border: none; background: #F1F5F9; width: 34px; height: 34px; border-radius: 50%; font-size: 16px; cursor: pointer; }
+    
+    .toast {
+      position: fixed; bottom: calc(24px + env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%); z-index: 450;
+      background: #1E293B; color: #fff; padding: 12px 22px; border-radius: 999px; font-size: 13px;
+      font-weight: 700; box-shadow: 0 10px 25px rgba(0,0,0,0.25); display: none; max-width: 90vw; text-align: center;
+    }
+
+    /* 8. ریسپانسیو رولز */
+    @media (max-width: 1024px) {
+      .navlinks { display: none; }
+      .footgrid { grid-template-columns: 1fr 1fr; gap: 24px; }
+      .why-copy { padding: 30px; }
+    }
+    @media (max-width: 768px) {
+      .hero-grid { grid-template-columns: 1fr; }
+      .hero-photo { height: 260px; border-radius: 20px; }
+      .why { grid-template-columns: 1fr; }
+      .why-photo { min-height: 200px; height: 200px; clip-path: none; }
+      .split { grid-template-columns: 1fr; gap: 0; }
+      .split-copy { padding: 20px; }
+      .cta { flex-direction: column; align-items: flex-start; }
+      .cta:after { display: none; }
+    }
+    @media (max-width: 600px) {
+      .topbar .wrap { justify-content: center; }
+      .topbar .wrap span:last-child { display: none; }
+      .nav { height: 68px; }
+      .brand-mark { height: 38px; width: 38px; font-size: 18px; }
+      .footgrid { grid-template-columns: 1fr; gap: 20px; }
+      .copyright .wrap { flex-direction: column; text-align: center; gap: 6px; }
+      .wa { right: 14px; bottom: calc(14px + env(safe-area-inset-bottom)); }
+      .btn { padding: 10px 18px; font-size: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="wrap">
+      <span>✦ Practical Digital Skills for a Brighter Future</span>
+      <span>Online Learning • Career-Focused Training</span>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="nav wrap">
+    <div class="brand" onclick="drawerNav('home')">
+      <span class="brand-mark">M</span>
+      <div class="brand-text">
+        <h1>MUSTAFA DIGITAL</h1>
+        <small>ACADEMY · MDA</small>
+      </div>
+    </div>
+
+    <!-- Desktop Navigation -->
+    <nav class="navlinks" id="desktopNav">
+      <button data-tab="home" onclick="drawerNav('home')">Home</button>
+      <button data-tab="library" onclick="drawerNav('library')">Library</button>
+      <button data-tab="live" onclick="drawerNav('live')">Live</button>
+      <button data-tab="tools" onclick="drawerNav('tools')">Tools</button>
+      <button data-tab="rewards" onclick="drawerNav('rewards')">Rewards</button>
+      <button data-tab="profile" onclick="drawerNav('profile')">Profile</button>
+    </nav>
+
+    <!-- Header Actions -->
+    <div class="nav-actions">
+      <button class="btn btn-sm" id="headerAuthBtn" onclick="handleHeaderAuth()">Sign In</button>
+      <button class="menu-toggle-btn" aria-label="Open Navigation Drawer" onclick="toggleDrawer(true)">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- SIDE DRAWER OVERLAY -->
+  <div class="drawer-overlay" id="drawerOverlay" onclick="if(event.target===this) toggleDrawer(false)">
+    <div class="drawer-menu">
+      <div class="drawer-head">
+        <div style="font-weight:800;font-size:16px;color:var(--navy);">Academy Portals</div>
+        <button class="drawer-close" onclick="toggleDrawer(false)">✕</button>
+      </div>
+
+      <div class="drawer-links">
+        <div class="drawer-item" onclick="drawerNav('home')">
+          <span class="d-icon">🏠</span><span>Home</span>
+        </div>
+        <div class="drawer-item" onclick="drawerNav('library')">
+          <span class="d-icon">📚</span><span>Library (Books & eBooks)</span>
+        </div>
+        <div class="drawer-item" onclick="drawerNav('live')">
+          <span class="d-icon">📺</span><span>Live Sessions</span>
+        </div>
+        <div class="drawer-item" onclick="drawerNav('tools')">
+          <span class="d-icon">🛠️</span><span>Smart Tools</span>
+        </div>
+        <div class="drawer-item" onclick="drawerNav('rewards')">
+          <span class="d-icon">🎁</span><span>Rewards & Earn</span>
+        </div>
+        <div class="drawer-item" onclick="drawerNav('profile')">
+          <span class="d-icon">👤</span><span>My Profile</span>
+        </div>
+        <div class="drawer-item" onclick="drawerNav('mock_tests')">
+          <span class="d-icon">📝</span><span>Mock Tests</span>
+        </div>
+        <div class="drawer-item" onclick="drawerNav('jobs')">
+          <span class="d-icon">💼</span><span>Jobs & Careers</span>
+        </div>
+      </div>
+
+      <div style="margin-top:auto;padding-top:14px;border-top:1px solid var(--border);">
+        <a class="btn dark" style="width:100%;box-sizing:border-box;" href="https://wa.me/923437269309?text=Assalam-o-Alaikum%2C%20I%20want%20details%20from%20MDA." target="_blank" rel="noopener">WhatsApp Support 💬</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- DYNAMIC FIREBASE CONTENT -->
+  <main class="app-container" id="appRoot"></main>
+
+  <!-- LANDING PAGE SECTIONS -->
+  <div id="landingSections">
+    <section class="hero" id="home">
+      <div class="wrap hero-grid">
+        <div class="hero-copy">
+          <span class="eyebrow">✦ Learn skills. Build your future.</span>
+          <h1>Transform Your Future with <span>Digital Skills</span></h1>
+          <p>Learn practical, in-demand online skills with Mustafa Digital Academy. Build confidence, gain real-world knowledge and take your next step towards digital success.</p>
+          <div class="hero-actions">
+            <button class="btn" onclick="scrollToCourses()">Explore Courses →</button>
+            <a class="watch" href="#about"><span class="play">▶</span> Discover MDA</a>
+          </div>
+        </div>
+        <div class="hero-photo">
+          <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=85" alt="Students learning together in a bright classroom">
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="courses">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">What you can learn</span>
+          <h2>Our Professional Courses</h2>
+          <p>Practical learning paths designed to help you build useful skills and move forward with confidence.</p>
+        </div>
+        <div class="cards">
+          <article class="course">
+            <img src="https://images.unsplash.com/photo-1556740749-887f6717d7e4?auto=format&fit=crop&w=700&q=80" alt="Online shopping and ecommerce">
+            <div class="course-body">
+              <span class="course-icon">A</span>
+              <h3>Amazon Training</h3>
+              <p>Understand ecommerce fundamentals, product research, listings and selling workflows.</p>
+              <a class="more" href="#contact">Learn More →</a>
+            </div>
+          </article>
+          <article class="course">
+            <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=700&q=80" alt="Online payment and ecommerce">
+            <div class="course-body">
+              <span class="course-icon">D</span>
+              <h3>Daraz Training</h3>
+              <p>Learn marketplace basics, store setup, product listings and order management.</p>
+              <a class="more" href="#contact">Learn More →</a>
+            </div>
+          </article>
+          <article class="course">
+            <img src="https://images.unsplash.com/photo-1558655146-d09347e92766?auto=format&fit=crop&w=700&q=80" alt="Creative digital design workspace">
+            <div class="course-body">
+              <span class="course-icon">S</span>
+              <h3>Shopify Training</h3>
+              <p>Explore online store creation, product setup, themes and ecommerce operations.</p>
+              <a class="more" href="#contact">Learn More →</a>
+            </div>
+          </article>
+          <article class="course">
+            <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=700&q=80" alt="Student working on a laptop">
+            <div class="course-body">
+              <span class="course-icon">✦</span>
+              <h3>Digital Skills</h3>
+              <p>Develop essential computer, online business and digital productivity skills.</p>
+              <a class="more" href="#contact">Learn More →</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="about">
+      <div class="wrap">
+        <div class="why">
+          <div class="why-copy">
+            <span class="eyebrow">The MDA difference</span>
+            <h2>Why Choose <span>Mustafa Digital Academy?</span></h2>
+            <div class="checks">
+              <div>Practical, skill-focused learning</div>
+              <div>Beginner-friendly guidance</div>
+              <div>Career and business-oriented courses</div>
+              <div>Learn online from anywhere</div>
+              <div>Supportive learning environment</div>
+            </div>
+            <a class="btn" style="margin-top:24px" href="#contact">Learn More →</a>
+          </div>
+          <div class="why-photo">
+            <img src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1000&q=85" alt="A team collaborating in a modern learning space">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="projects">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">Learning in action</span>
+          <h2>Explore the World of Digital Learning</h2>
+          <p>Build practical knowledge through guided lessons, activities and hands-on practice.</p>
+        </div>
+        <div class="projects">
+          <div class="project">
+            <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80" alt="Online learning">
+            <span>Online Learning</span>
+          </div>
+          <div class="project">
+            <img src="https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=800&q=80" alt="Teamwork and collaboration">
+            <span>Practical Projects</span>
+          </div>
+          <div class="project">
+            <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=800&q=80" alt="Students working together">
+            <span>Student Community</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="process" style="background:#f8faff">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">Simple steps</span>
+          <h2>Our Learning Process</h2>
+          <p>A clear path from your first enquiry to building new skills.</p>
+        </div>
+        <div class="process">
+          <div class="step">
+            <div class="step-icon">☏</div>
+            <h3>1. Get in Touch</h3>
+            <p>Tell us about your goals and the skills you want to learn.</p>
+          </div>
+          <div class="step">
+            <div class="step-icon">▤</div>
+            <h3>2. Choose a Course</h3>
+            <p>Find a learning path that matches your interests.</p>
+          </div>
+          <div class="step">
+            <div class="step-icon">⚙</div>
+            <h3>3. Start Learning</h3>
+            <p>Follow guided lessons and practise new skills.</p>
+          </div>
+          <div class="step">
+            <div class="step-icon">✓</div>
+            <h3>4. Grow with Confidence</h3>
+            <p>Use your knowledge to take the next step forward.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="split">
+          <img src="https://images.unsplash.com/photo-1523580846011-d3a5bc25702b?auto=format&fit=crop&w=1000&q=85" alt="Students studying in a bright classroom">
+          <div class="split-copy">
+            <span class="eyebrow">Your next step starts here</span>
+            <h2>Upgrade Your Skills with Confidence</h2>
+            <p>Whether you are starting from zero or looking to improve your digital knowledge, MDA is here to help you learn, practise and grow.</p>
+            <a class="btn" href="#contact">Get Course Details →</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">Our learning community</span>
+          <h2>What Students Value</h2>
+          <p>A welcoming place to learn new skills and work towards your goals.</p>
+        </div>
+        <div class="testimonials">
+          <div class="quote">
+            <div class="quote-mark">“</div>
+            <div>
+              <p>The course helped me understand the basics step by step. The practical approach made learning easier.</p>
+              <strong>MDA Student</strong><small>Digital Skills Learner</small>
+            </div>
+          </div>
+          <div class="quote">
+            <div class="quote-mark">“</div>
+            <div>
+              <p>A supportive learning experience with useful knowledge that I can apply to my own projects.</p>
+              <strong>MDA Student</strong><small>Ecommerce Learner</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="wrap" id="contact" style="margin-bottom:40px;">
+      <div class="cta">
+        <div>
+          <h2>Ready to Transform Your Future?</h2>
+          <p>Get in touch with MDA and find the right course for your goals.</p>
+        </div>
+        <a class="btn" href="https://wa.me/923437269309?text=Assalam-o-Alaikum%2C%20I%20want%20course%20details%20from%20MDA." target="_blank" rel="noopener">Contact Us →</a>
+      </div>
+    </section>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="wrap footgrid">
+      <div>
+        <h4 style="color:var(--navy);font-size:15px;margin-bottom:8px;">Mustafa Digital Academy</h4>
+        <p>Empowering learners with actionable digital, freelancing, and ecommerce skills to build successful careers.</p>
+        <div class="social">
+          <a href="#" aria-label="Facebook">f</a>
+          <a href="#" aria-label="YouTube">▶</a>
+          <a href="#" aria-label="LinkedIn">in</a>
+        </div>
+      </div>
+      <div>
+        <h4>Quick Links</h4>
+        <a href="#home" onclick="drawerNav('home')">Home</a>
+        <a href="#courses" onclick="scrollToCourses()">Courses</a>
+        <a href="#about">About MDA</a>
+        <a href="#process">How It Works</a>
+      </div>
+      <div>
+        <h4>Portals</h4>
+        <a href="javascript:void(0)" onclick="drawerNav('library')">eBooks Library</a>
+        <a href="javascript:void(0)" onclick="drawerNav('live')">Live Sessions</a>
+        <a href="javascript:void(0)" onclick="drawerNav('tools')">Smart Tools</a>
+        <a href="javascript:void(0)" onclick="drawerNav('rewards')">Watch & Earn</a>
+      </div>
+      <div>
+        <h4>Contact & Support</h4>
+        <p>WhatsApp: +92 343 7269309</p>
+        <p>Email: nazimmustafa785@gmail.com</p>
+        <p>Support: 24/7 Online Assistance</p>
+      </div>
+    </div>
+    <div class="copyright">
+      <div class="wrap">
+        <span>© 2026 Mustafa Digital Academy (MDA). All rights reserved.</span>
+        <span>Learn • Build • Grow</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- FLOATING WHATSAPP -->
+  <a class="wa" href="https://wa.me/923437269309?text=Assalam-o-Alaikum%2C%20I%20want%20course%20details%20from%20MDA." target="_blank" rel="noopener">WhatsApp 💬</a>
+
+  <!-- MODAL -->
+  <div class="modal-backdrop" id="modalBackdrop" onclick="if(event.target===this) closeModal()">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h3 id="modalTitle" style="margin:0;font-size:17px;font-weight:800;color:var(--primary);">Modal</h3>
+        <button class="close-x" onclick="closeModal()" aria-label="Close">✕</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toastEl"></div>
+
+  <!-- CONTROLLER JS -->
+  <script>
+    // 1. ڈبل ٹیپ اور چٹکی (Pinch) زوم بلاکر
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', function (event) {
+      const now = (new Date()).getTime();
+      if (now - lastTouchEnd <= 300) {
+        event.preventDefault();
+      }
+      lastTouchEnd = now;
+    }, false);
+
+    document.addEventListener('gesturestart', function (e) {
+      e.preventDefault();
+    });
+
+    // 2. سائیڈ ڈراور کنٹرول
+    function toggleDrawer(open, pushToHistory = true) {
+      const el = document.getElementById('drawerOverlay');
+      if (!el) return;
+      const isOpen = el.classList.contains('open');
+      
+      if (open && !isOpen) {
+        el.classList.add('open');
+        if (pushToHistory) {
+          history.pushState({ isDrawer: true }, '', '#menu');
+        }
+      } else if (!open && isOpen) {
+        el.classList.remove('open');
+      }
+    }
+
+    // 3. موڈل کنٹرول
+    function closeModal(triggerHistory = false) {
+      const backdrop = document.getElementById('modalBackdrop');
+      if (backdrop && backdrop.classList.contains('open')) {
+        backdrop.classList.remove('open');
+        const modalBody = document.getElementById('modalBody');
+        if (modalBody) modalBody.innerHTML = '';
+        if (triggerHistory && history.state && history.state.isModal) {
+          history.back();
+        }
+      }
+    }
+
+    // 4. مرکزی نیویگیشن فنکشن (بیک لاجک سپورٹ)
+    function drawerNav(route, param = null, pushToHistory = true) {
+      const drawer = document.getElementById('drawerOverlay');
+      if (drawer && drawer.classList.contains('open')) {
+        drawer.classList.remove('open');
+      }
+
+      const landing = document.getElementById('landingSections');
+      if (landing) {
+        landing.style.display = (route === 'home') ? 'block' : 'none';
+      }
+
+      if (pushToHistory) {
+        history.pushState({ route: route, param: param }, '', '#' + route + (param ? '-' + param : ''));
+      }
+
+      if (typeof window.navigate === 'function') {
+        window.navigate(route, param);
+      }
+
+      const appRoot = document.getElementById('appRoot');
+      if (appRoot && route !== 'home') {
+        appRoot.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    // 5. موبائل ہارڈویئر بیک بٹن ہینڈلر (POPSTATE LISTENER)
+    window.addEventListener('popstate', function (e) {
+      const modal = document.getElementById('modalBackdrop');
+      if (modal && modal.classList.contains('open')) {
+        closeModal(false);
+        return;
+      }
+
+      const drawer = document.getElementById('drawerOverlay');
+      if (drawer && drawer.classList.contains('open')) {
+        drawer.classList.remove('open');
+        return;
+      }
+
+      const state = e.state;
+      if (state && state.route) {
+        drawerNav(state.route, state.param, false);
+      } else {
+        drawerNav('home', null, false);
+      }
+    });
+
+    window.addEventListener('DOMContentLoaded', function () {
+      if (!history.state) {
+        history.replaceState({ route: 'home', param: null }, '', window.location.pathname);
+      }
+    });
+
+    function scrollToCourses() {
+      const el = document.getElementById('courses');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+  </script>
+
+  <!-- External Script File (Loads intact without modification) -->
+  <script src="script.js" defer></script>
+</body>
+</html>
